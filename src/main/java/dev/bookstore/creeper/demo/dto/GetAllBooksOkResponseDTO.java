@@ -8,10 +8,10 @@ import java.util.List;
 @Data
 public class GetAllBooksOkResponseDTO {
     private Integer total;
-    private List<Book> items;
+    private List<Book> books;
 
     public GetAllBooksOkResponseDTO(List<Book> books) {
         this.total = books.size();
-        this.items = books;
+        this.books = books;
     }
 }
