@@ -30,10 +30,9 @@ public class Comment {
     public Comment() {
         // not used
     }
-    public Comment(Integer id, String username, String content, Date time) {
-        this.id = id;
+    public Comment(String username, String content) {
         this.username = username;
         this.content = content;
-        this.time = time;
+        this.time = new Date();
     }
 }

@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import dev.bookstore.creeper.demo.model.Book;
+import dev.bookstore.creeper.demo.model.Comment;
 import dev.bookstore.creeper.demo.repository.BookRepository;
 import dev.bookstore.creeper.demo.service.BookService;
 
@@ -37,6 +38,20 @@ public class BookServiceImpl implements BookService {
     public Book getBookInfo(Integer id) {
         Book book = repository.findById(id).orElseThrow(() -> new NoSuchElementException("Book with id " + id + " not found"));
         return book;
+    }
+
+    @Override
+    public List<Comment> getBookComments(Integer id) {
+        return repository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("Book with id " + id + " not found"))
+            .getComments();
+    }
+
+    @Override
+    public void createBookComment(Integer id, String content) {
+        Book book = repository.findById(id).orElseThrow(() -> new NoSuchElementException("Book with id " + id + " not found"));
+        book.getComments().add(new Comment("username", content));
+        repository.save(book);
     }
     
 }
