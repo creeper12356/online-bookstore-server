@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.NoSuchElementException;
 
 
-@Controller
 @RequestMapping("/api/books")
+@Controller
 public class BookController {
     private final BookService service;
     
@@ -61,13 +61,13 @@ public class BookController {
     @PostMapping("/{id}/comments")
     public ResponseEntity<Object> createBotComment(
             @PathVariable Integer id,
-            @RequestBody CreateBookCommentRequestDTO dto) 
-            {
+            @RequestBody CreateBookCommentRequestDTO dto
+        ) {
                 try {
                     service.createBookComment(id, dto.getContent());
                     return ResponseEntity.ok(new GeneralResponseDTO(true, "Comment created successfully"));
                 } catch (NoSuchElementException e) {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new GeneralResponseDTO(false, e.getMessage()));
                 }
-            }
+        }
 }
