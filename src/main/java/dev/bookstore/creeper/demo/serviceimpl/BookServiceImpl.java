@@ -1,16 +1,17 @@
 package dev.bookstore.creeper.demo.serviceimpl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import dev.bookstore.creeper.demo.dto.GetAllBooksOkResponseDTO;
 import dev.bookstore.creeper.demo.model.Book;
 import dev.bookstore.creeper.demo.model.Comment;
 import dev.bookstore.creeper.demo.repository.BookRepository;
 import dev.bookstore.creeper.demo.service.BookService;
+import dev.bookstore.creeper.demo.utils.PaginationUtils;
 
 
 @Service
@@ -22,16 +23,20 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Book> getAllBooks(String q, Integer page, Integer pagesize) {
+    public GetAllBooksOkResponseDTO getAllBooks(
+        String q, 
+        Integer page, 
+        Integer pagesize
+        ) {
         List<Book> bookList = repository.findAll()
             .stream()
             .filter(book -> q.isEmpty() ? true :  book.getTitle()
             .contains(q)).collect(Collectors.toList());
 
-        int fromIndex = page * pagesize;
-        int toIndex = Math.min(page * pagesize + pagesize, bookList.size());
-
-        return fromIndex > toIndex ? new ArrayList<>() : bookList.subList(fromIndex, toIndex);
+        return new GetAllBooksOkResponseDTO(
+            bookList.size(), 
+            PaginationUtils.paginate(bookList, page, pagesize)
+        );
     }
 
     @Override

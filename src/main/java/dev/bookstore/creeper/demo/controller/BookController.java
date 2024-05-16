@@ -2,7 +2,6 @@ package dev.bookstore.creeper.demo.controller;
 
 import dev.bookstore.creeper.demo.dto.BookDTO;
 import dev.bookstore.creeper.demo.dto.GeneralResponseDTO;
-import dev.bookstore.creeper.demo.dto.GetAllBooksOkResponseDTO;
 import dev.bookstore.creeper.demo.dto.GetBookCommentsOkResponseDTO;
 import dev.bookstore.creeper.demo.dto.CreateBookCommentRequestDTO;
 import dev.bookstore.creeper.demo.service.BookService;
@@ -29,7 +28,9 @@ public class BookController {
             @RequestParam(defaultValue = "") String q,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "20") Integer pagesize) {
-                return ResponseEntity.ok(new GetAllBooksOkResponseDTO(service.getAllBooks(q, page, pagesize)));
+                return ResponseEntity.ok(
+                    service.getAllBooks(q, page, pagesize)
+                );
     }
 
     @GetMapping("/{id}")

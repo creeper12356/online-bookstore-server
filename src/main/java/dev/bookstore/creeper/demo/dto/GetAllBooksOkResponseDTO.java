@@ -11,8 +11,8 @@ public class GetAllBooksOkResponseDTO {
     private Integer total;
     private List<BookDTO> books;
 
-    public GetAllBooksOkResponseDTO(List<Book> books) {
-        this.total = books.size();
+    public GetAllBooksOkResponseDTO(Integer total, List<Book> books) {
+        this.total = total;
         this.books = books.stream().map(book -> new BookDTO(book)).collect(Collectors.toList());
     }
 }

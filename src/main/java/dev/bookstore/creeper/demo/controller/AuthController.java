@@ -1,5 +1,7 @@
 package dev.bookstore.creeper.demo.controller;
 
+import javax.naming.AuthenticationException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,7 +49,7 @@ public class AuthController {
             CookieUtils.set(response, "token", token, 24 * 60 * 60);
             return ResponseEntity
                     .ok(new LoginOkResponseDTO(token));
-        } catch(IllegalArgumentException e) {
+        } catch(AuthenticationException e) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(new GeneralResponseDTO(false, e.getMessage()));

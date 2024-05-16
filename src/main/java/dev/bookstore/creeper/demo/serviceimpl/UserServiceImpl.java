@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getMe(String token) throws Exception {
         try {
-            return authService.findUserByToken(token);
+            return authService.getUserByToken(token);
         } catch(NoSuchElementException e) {
             throw new AuthenticationException("Authentication fails.");
         }

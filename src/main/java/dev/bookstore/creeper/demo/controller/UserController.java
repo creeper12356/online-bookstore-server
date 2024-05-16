@@ -26,7 +26,7 @@ public class UserController {
     public ResponseEntity<Object> getMe(@CookieValue(value = "token", defaultValue = "") String token) {
         try {
             return ResponseEntity
-                .ok(new UserDTO(userService.getMe("null")));
+                .ok(new UserDTO(userService.getMe(token)));
         } catch(AuthenticationException e) {
             return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)

@@ -1,45 +1,42 @@
 package dev.bookstore.creeper.demo.model;
 
-import java.util.UUID;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "user_auth")
-public class Auth {
+@Table(name = "cart_item")
+public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "book_id")
+    private Book book;
+
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "token")
-    private String token;
+    @Column(name = "number")
+    private Integer number;
 
-    public Auth() {
+    public CartItem() {
         // not used
     }
 
-    public Auth(User user) {
-        this.token = this.generateToken();
+    public CartItem(Book book, User user, Integer number) {
+        this.book = book;
         this.user = user;
+        this.number = number;
     }
 
-    private String generateToken() {
-        return UUID.randomUUID().toString();
-    }
-    public void updateToken() {
-        this.token = UUID.randomUUID().toString();
-    }
 }
