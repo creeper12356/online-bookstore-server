@@ -1,5 +1,6 @@
 package dev.bookstore.creeper.demo.serviceimpl;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -9,7 +10,7 @@ import javax.naming.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 import dev.bookstore.creeper.demo.dto.CartItemDTO;
-import dev.bookstore.creeper.demo.dto.GetCartItemsOkDTO;
+import dev.bookstore.creeper.demo.dto.GetItemsOkDTO;
 import dev.bookstore.creeper.demo.model.Book;
 import dev.bookstore.creeper.demo.model.CartItem;
 import dev.bookstore.creeper.demo.model.User;
@@ -39,7 +40,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public GetCartItemsOkDTO getCartItems(String token) throws AuthenticationException{
+    public GetItemsOkDTO<CartItemDTO> getCartItems(String token) throws AuthenticationException{
         User user;
         try {
             user = authService.getUserByToken(token);
@@ -51,10 +52,11 @@ public class CartServiceImpl implements CartService {
                                         .map(
                                             cartItem -> new CartItemDTO(cartItem)
                                         )
+                                        .sorted(Comparator.comparing(CartItemDTO::getId).reversed())
                                         .collect(Collectors.toList());
 
         // TODO: 分页接口
-        return new GetCartItemsOkDTO(cartItems.size(), cartItems);
+        return new GetItemsOkDTO<>(cartItems.size(), cartItems);
     }
 
     @Override 

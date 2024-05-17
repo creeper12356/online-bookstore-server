@@ -2,7 +2,8 @@ package dev.bookstore.creeper.demo.service;
 
 import javax.naming.AuthenticationException;
 
-import dev.bookstore.creeper.demo.dto.GetCartItemsOkDTO;
+import dev.bookstore.creeper.demo.dto.CartItemDTO;
+import dev.bookstore.creeper.demo.dto.GetItemsOkDTO;
 
 public interface CartService {
 
@@ -12,7 +13,7 @@ public interface CartService {
      * @return GetCartItemsOkDTO
      * @throws AuthenticationException
      */
-    GetCartItemsOkDTO getCartItems(String token) 
+    GetItemsOkDTO<CartItemDTO> getCartItems(String token) 
         throws AuthenticationException;
 
     /**

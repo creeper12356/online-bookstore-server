@@ -33,6 +33,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<CartItem> cartItems;
 
+    @OneToMany(mappedBy = "user")
+    private List<Order> orders;
+
     public User() {
         // not used
     }
@@ -42,5 +45,6 @@ public class User {
         this.password = password;
         this.balance = 0;
         this.cartItems = new ArrayList<>();
+        this.orders = new ArrayList<>();
     }
 }
