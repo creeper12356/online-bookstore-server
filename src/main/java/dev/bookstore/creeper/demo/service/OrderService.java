@@ -10,13 +10,16 @@ public interface OrderService {
 
     /**
      * @brief 获取所有订单
-     * @param token 用户token
+     * @param userId 当前用户id
      * @return 
-     * @throws AuthenticationException
      */
-    GetItemsOkDTO<OrderDTO> getOrders(String token) 
-        throws AuthenticationException;
+    GetItemsOkDTO<OrderDTO> getOrders(int userId);
 
-    void createOrder(String token, CreateOrderRequestDTO dto) 
-        throws AuthenticationException;
+    /**
+     * @brief 创建订单
+     * @param userId 当前用户id
+     * @param dto 创建订单的请求体
+     * @throws AuthenticationException 创建订单失败，抛出异常
+     */
+    void createOrder(int userId, CreateOrderRequestDTO dto); 
 }

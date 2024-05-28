@@ -10,11 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.bookstore.creeper.demo.dto.GeneralResponseDTO;
-import dev.bookstore.creeper.demo.dto.LoginOkResponseDTO;
 import dev.bookstore.creeper.demo.dto.RegisterRequestDTO;
+import dev.bookstore.creeper.demo.model.User;
 import dev.bookstore.creeper.demo.service.AuthService;
-import dev.bookstore.creeper.demo.utils.CookieUtils;
-import jakarta.servlet.http.HttpServletResponse;
+import dev.bookstore.creeper.demo.utils.SessionUtils;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -31,7 +30,7 @@ public class AuthController {
             authService.register(dto);
             return ResponseEntity
                     .ok(new GeneralResponseDTO(true, "User registered successfully"));
-        } 
+        }
         
         catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
@@ -41,14 +40,13 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<Object> login(
-        @RequestBody RegisterRequestDTO dto, 
-        HttpServletResponse response
+        @RequestBody RegisterRequestDTO dto
     ) {
         try {
-            String token = authService.login(dto);
-            CookieUtils.set(response, "token", token, 24 * 60 * 60);
+            User loginUser = authService.login(dto);
+            SessionUtils.setSession(loginUser);
             return ResponseEntity
-                    .ok(new LoginOkResponseDTO(token));
+                    .ok(new GeneralResponseDTO(true, "Login successful"));
         } catch(AuthenticationException e) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)

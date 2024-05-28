@@ -2,29 +2,23 @@ package dev.bookstore.creeper.demo.serviceimpl;
 
 import java.util.NoSuchElementException;
 
-import javax.naming.AuthenticationException;
-
 import org.springframework.stereotype.Service;
 
 import dev.bookstore.creeper.demo.model.User;
-import dev.bookstore.creeper.demo.service.AuthService;
+import dev.bookstore.creeper.demo.repository.UserRepository;
 import dev.bookstore.creeper.demo.service.UserService;
 
 
 @Service
 public class UserServiceImpl implements UserService {
-    public final AuthService authService;
+    public final UserRepository userRepository;
 
-    public UserServiceImpl(AuthService authService) {
-        this.authService = authService;
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
-    public User getMe(String token) throws Exception {
-        try {
-            return authService.getUserByToken(token);
-        } catch(NoSuchElementException e) {
-            throw new AuthenticationException("Authentication fails.");
-        }
+    public User getMe(int userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User not found."));
     }
 }

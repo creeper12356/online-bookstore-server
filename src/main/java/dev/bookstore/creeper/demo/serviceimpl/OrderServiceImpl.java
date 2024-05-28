@@ -5,8 +5,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import javax.naming.AuthenticationException;
-
 import org.springframework.stereotype.Service;
 
 import dev.bookstore.creeper.demo.dto.CreateCartItemRequestDTO;
@@ -19,33 +17,28 @@ import dev.bookstore.creeper.demo.model.OrderItem;
 import dev.bookstore.creeper.demo.model.User;
 import dev.bookstore.creeper.demo.repository.BookRepository;
 import dev.bookstore.creeper.demo.repository.OrderRepository;
-import dev.bookstore.creeper.demo.service.AuthService;
+import dev.bookstore.creeper.demo.repository.UserRepository;
 import dev.bookstore.creeper.demo.service.OrderService;
 
 @Service
 public class OrderServiceImpl implements OrderService{
-    private final AuthService authService;
     private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
     private final BookRepository bookRepository;
 
     public OrderServiceImpl(
-        AuthService authService, 
         OrderRepository orderRepository,
-        BookRepository bookRepository) 
-    {
-        this.authService = authService;
+        UserRepository userRepository,
+        BookRepository bookRepository
+    ) {
         this.orderRepository = orderRepository;
+        this.userRepository = userRepository;
         this.bookRepository = bookRepository;
     }
 
     @Override 
-    public GetItemsOkDTO<OrderDTO> getOrders(String token) throws AuthenticationException {
-        User user;
-        try {
-            user = authService.getUserByToken(token);
-        } catch(NoSuchElementException e) {
-            throw new AuthenticationException("Invalid token");
-        }
+    public GetItemsOkDTO<OrderDTO> getOrders(int userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User not found."));
         List<OrderDTO> orders = user
                                 .getOrders()
                                 .stream()
@@ -56,13 +49,8 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public void createOrder(String token, CreateOrderRequestDTO dto) throws AuthenticationException {
-        User user;
-        try {
-            user = authService.getUserByToken(token);
-        } catch(NoSuchElementException e) {
-            throw new AuthenticationException("Invalid token");
-        }
+    public void createOrder(int userId, CreateOrderRequestDTO dto) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User not found."));
 
         // 检查书籍库存
         List<OrderItem> orderItems = new ArrayList<>();
