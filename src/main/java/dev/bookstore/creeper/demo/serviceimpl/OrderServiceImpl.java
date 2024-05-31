@@ -8,6 +8,7 @@ import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 
 import dev.bookstore.creeper.demo.dao.BookDAO;
+import dev.bookstore.creeper.demo.dao.OrderDAO;
 import dev.bookstore.creeper.demo.dto.CreateCartItemRequestDTO;
 import dev.bookstore.creeper.demo.dto.CreateOrderRequestDTO;
 import dev.bookstore.creeper.demo.dto.GetItemsOkDTO;
@@ -16,22 +17,21 @@ import dev.bookstore.creeper.demo.model.Book;
 import dev.bookstore.creeper.demo.model.Order;
 import dev.bookstore.creeper.demo.model.OrderItem;
 import dev.bookstore.creeper.demo.model.User;
-import dev.bookstore.creeper.demo.repository.OrderRepository;
 import dev.bookstore.creeper.demo.repository.UserRepository;
 import dev.bookstore.creeper.demo.service.OrderService;
 
 @Service
 public class OrderServiceImpl implements OrderService{
-    private final OrderRepository orderRepository;
+    private final OrderDAO orderDAO;
     private final UserRepository userRepository;
     private final BookDAO bookDAO;
 
     public OrderServiceImpl(
-        OrderRepository orderRepository,
+        OrderDAO orderDAO,
         UserRepository userRepository,
         BookDAO bookDAO
     ) {
-        this.orderRepository = orderRepository;
+        this.orderDAO = orderDAO;
         this.userRepository = userRepository;
         this.bookDAO = bookDAO;
     }
@@ -79,7 +79,7 @@ public class OrderServiceImpl implements OrderService{
             orderItems.add(new OrderItem(books.get(i), dto.getBooks().get(i).getNumber(),order));
         }
 
-        orderRepository.save(order);
+        orderDAO.saveOrder(order);
 
         user.getOrders().add(order);
     }
