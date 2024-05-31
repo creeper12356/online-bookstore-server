@@ -10,28 +10,28 @@ import javax.naming.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 import dev.bookstore.creeper.demo.dao.BookDAO;
+import dev.bookstore.creeper.demo.dao.CartItemDAO;
 import dev.bookstore.creeper.demo.dto.CartItemDTO;
 import dev.bookstore.creeper.demo.dto.GetItemsOkDTO;
 import dev.bookstore.creeper.demo.model.Book;
 import dev.bookstore.creeper.demo.model.CartItem;
 import dev.bookstore.creeper.demo.model.User;
-import dev.bookstore.creeper.demo.repository.CartItemRepository;
 import dev.bookstore.creeper.demo.repository.UserRepository;
 import dev.bookstore.creeper.demo.service.CartService;
 
 @Service
 public class CartServiceImpl implements CartService {
-    private UserRepository userRepository;
-    private BookDAO bookDAO;
-    private CartItemRepository cartItemRepository;
+    private final UserRepository userRepository;
+    private final BookDAO bookDAO;
+    private final CartItemDAO cartItemDAO;
 
     public CartServiceImpl(
             UserRepository userRepository,
             BookDAO bookDAO,
-            CartItemRepository cartItemRepository) {
+            CartItemDAO cartItemDAO) {
         this.userRepository = userRepository;
         this.bookDAO = bookDAO;
-        this.cartItemRepository = cartItemRepository;
+        this.cartItemDAO = cartItemDAO;
     }
 
     @Override
@@ -56,13 +56,13 @@ public class CartServiceImpl implements CartService {
                 .orElseThrow(
                         () -> new NoSuchElementException("Book not found"));
 
-        if (cartItemRepository.findByBookAndUser(book, user).isPresent()) {
+        if (cartItemDAO.findCartItemByBookAndUser(book, user).isPresent()) {
             // 购物车中已经有这本书
             throw new IllegalArgumentException("Book already in cart");
         }
 
         CartItem cartItem = new CartItem(book, user, 1);
-        cartItemRepository.save(cartItem);
+        cartItemDAO.saveCartItem(cartItem);
 
         user.getCartItems().add(cartItem);
         userRepository.save(user);
@@ -76,14 +76,14 @@ public class CartServiceImpl implements CartService {
             Integer cartItemId,
             Integer number) throws AuthenticationException {
         User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
-        CartItem cartItem = cartItemRepository.findById(cartItemId)
+        CartItem cartItem = cartItemDAO.findCartItemById(cartItemId)
                 .orElseThrow(() -> new NoSuchElementException("cartItem not found"));
 
         if (!cartItem.getUser().equals(user)) {
             throw new AuthenticationException("User not authorized");
         }
         cartItem.setNumber(number);
-        cartItemRepository.save(cartItem);
+        cartItemDAO.saveCartItem(cartItem);
     }
 
     @Override
@@ -92,12 +92,12 @@ public class CartServiceImpl implements CartService {
             Integer cartItemId) throws AuthenticationException {
         User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
 
-        CartItem cartItem = cartItemRepository.findById(cartItemId)
+        CartItem cartItem = cartItemDAO.findCartItemById(cartItemId)
                 .orElseThrow(() -> new NoSuchElementException("cartItem not found"));
         if (!cartItem.getUser().equals(user)) {
             throw new AuthenticationException("User not authorized");
         }
 
-        cartItemRepository.delete(cartItem);
+        cartItemDAO.deleteCartItem(cartItem);
     }
 }

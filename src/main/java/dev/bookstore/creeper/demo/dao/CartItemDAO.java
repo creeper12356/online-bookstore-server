@@ -7,5 +7,8 @@ import dev.bookstore.creeper.demo.model.CartItem;
 import dev.bookstore.creeper.demo.model.User;
 
 public interface CartItemDAO {
-    Optional<CartItem> findByBookAndUser(Book book, User user);
+    Optional<CartItem> findCartItemByBookAndUser(Book book, User user);
+    Optional<CartItem> findCartItemById(Integer id);
+    void saveCartItem(CartItem cartItem);
+    void deleteCartItem(CartItem cartItem);
 }

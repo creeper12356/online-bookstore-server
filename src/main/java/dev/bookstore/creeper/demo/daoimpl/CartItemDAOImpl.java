@@ -15,7 +15,22 @@ public class CartItemDAOImpl implements CartItemDAO {
     private CartItemRepository cartItemRepository;
 
     @Override
-    public Optional<CartItem> findByBookAndUser(Book book, User user) {
+    public Optional<CartItem> findCartItemByBookAndUser(Book book, User user) {
         return cartItemRepository.findByBookAndUser(book, user);
+    }
+
+    @Override
+    public Optional<CartItem> findCartItemById(Integer id) {
+        return cartItemRepository.findById(id);
+    }
+
+    @Override
+    public void saveCartItem(CartItem cartItem) {
+        cartItemRepository.save(cartItem);
+    }
+
+    @Override
+    public void deleteCartItem(CartItem cartItem) {
+        cartItemRepository.delete(cartItem);
     }
 }
