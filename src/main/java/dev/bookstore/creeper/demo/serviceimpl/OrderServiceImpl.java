@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 
+import dev.bookstore.creeper.demo.dao.BookDAO;
 import dev.bookstore.creeper.demo.dto.CreateCartItemRequestDTO;
 import dev.bookstore.creeper.demo.dto.CreateOrderRequestDTO;
 import dev.bookstore.creeper.demo.dto.GetItemsOkDTO;
@@ -15,7 +16,6 @@ import dev.bookstore.creeper.demo.model.Book;
 import dev.bookstore.creeper.demo.model.Order;
 import dev.bookstore.creeper.demo.model.OrderItem;
 import dev.bookstore.creeper.demo.model.User;
-import dev.bookstore.creeper.demo.repository.BookRepository;
 import dev.bookstore.creeper.demo.repository.OrderRepository;
 import dev.bookstore.creeper.demo.repository.UserRepository;
 import dev.bookstore.creeper.demo.service.OrderService;
@@ -24,16 +24,16 @@ import dev.bookstore.creeper.demo.service.OrderService;
 public class OrderServiceImpl implements OrderService{
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
-    private final BookRepository bookRepository;
+    private final BookDAO bookDAO;
 
     public OrderServiceImpl(
         OrderRepository orderRepository,
         UserRepository userRepository,
-        BookRepository bookRepository
+        BookDAO bookDAO
     ) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
-        this.bookRepository = bookRepository;
+        this.bookDAO = bookDAO;
     }
 
     @Override 
@@ -59,7 +59,7 @@ public class OrderServiceImpl implements OrderService{
                                 .stream()
                                 .map(CreateCartItemRequestDTO::getBookId)
                                 .toList();
-        List<Book> books = bookRepository.findAllById(bookIds);
+        List<Book> books = bookDAO.findAllBooksById(bookIds);
 
         if(books.size() != bookIds.size()) {
             // 有书籍不存在

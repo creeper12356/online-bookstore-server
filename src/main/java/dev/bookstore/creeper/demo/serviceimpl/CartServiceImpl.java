@@ -9,12 +9,12 @@ import javax.naming.AuthenticationException;
 
 import org.springframework.stereotype.Service;
 
+import dev.bookstore.creeper.demo.dao.BookDAO;
 import dev.bookstore.creeper.demo.dto.CartItemDTO;
 import dev.bookstore.creeper.demo.dto.GetItemsOkDTO;
 import dev.bookstore.creeper.demo.model.Book;
 import dev.bookstore.creeper.demo.model.CartItem;
 import dev.bookstore.creeper.demo.model.User;
-import dev.bookstore.creeper.demo.repository.BookRepository;
 import dev.bookstore.creeper.demo.repository.CartItemRepository;
 import dev.bookstore.creeper.demo.repository.UserRepository;
 import dev.bookstore.creeper.demo.service.CartService;
@@ -22,15 +22,15 @@ import dev.bookstore.creeper.demo.service.CartService;
 @Service
 public class CartServiceImpl implements CartService {
     private UserRepository userRepository;
-    private BookRepository bookRepository;
+    private BookDAO bookDAO;
     private CartItemRepository cartItemRepository;
 
     public CartServiceImpl(
             UserRepository userRepository,
-            BookRepository bookRepository,
+            BookDAO bookDAO,
             CartItemRepository cartItemRepository) {
         this.userRepository = userRepository;
-        this.bookRepository = bookRepository;
+        this.bookDAO = bookDAO;
         this.cartItemRepository = cartItemRepository;
     }
 
@@ -51,8 +51,8 @@ public class CartServiceImpl implements CartService {
     @Override
     public Integer createCartItem(int userId, Integer bookId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
-        Book book = bookRepository
-                .findById(bookId)
+        Book book = bookDAO
+                .findBookById(bookId)
                 .orElseThrow(
                         () -> new NoSuchElementException("Book not found"));
 
