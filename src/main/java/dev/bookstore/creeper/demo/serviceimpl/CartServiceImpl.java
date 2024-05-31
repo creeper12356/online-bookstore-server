@@ -11,32 +11,32 @@ import org.springframework.stereotype.Service;
 
 import dev.bookstore.creeper.demo.dao.BookDAO;
 import dev.bookstore.creeper.demo.dao.CartItemDAO;
+import dev.bookstore.creeper.demo.dao.UserDAO;
 import dev.bookstore.creeper.demo.dto.CartItemDTO;
 import dev.bookstore.creeper.demo.dto.GetItemsOkDTO;
 import dev.bookstore.creeper.demo.model.Book;
 import dev.bookstore.creeper.demo.model.CartItem;
 import dev.bookstore.creeper.demo.model.User;
-import dev.bookstore.creeper.demo.repository.UserRepository;
 import dev.bookstore.creeper.demo.service.CartService;
 
 @Service
 public class CartServiceImpl implements CartService {
-    private final UserRepository userRepository;
+    private final UserDAO userDAO;
     private final BookDAO bookDAO;
     private final CartItemDAO cartItemDAO;
 
     public CartServiceImpl(
-            UserRepository userRepository,
+            UserDAO userDAO,
             BookDAO bookDAO,
             CartItemDAO cartItemDAO) {
-        this.userRepository = userRepository;
+        this.userDAO = userDAO;
         this.bookDAO = bookDAO;
         this.cartItemDAO = cartItemDAO;
     }
 
     @Override
     public GetItemsOkDTO<CartItemDTO> getCartItems(int userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
+        User user = userDAO.findUserById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
         List<CartItemDTO> cartItems = user.getCartItems()
                 .stream()
                 .map(
@@ -50,7 +50,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public Integer createCartItem(int userId, Integer bookId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
+        User user = userDAO.findUserById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
         Book book = bookDAO
                 .findBookById(bookId)
                 .orElseThrow(
@@ -65,7 +65,7 @@ public class CartServiceImpl implements CartService {
         cartItemDAO.saveCartItem(cartItem);
 
         user.getCartItems().add(cartItem);
-        userRepository.save(user);
+        userDAO.saveUser(user);
 
         return cartItem.getId();
     }
@@ -75,7 +75,7 @@ public class CartServiceImpl implements CartService {
             int userId,
             Integer cartItemId,
             Integer number) throws AuthenticationException {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
+        User user = userDAO.findUserById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
         CartItem cartItem = cartItemDAO.findCartItemById(cartItemId)
                 .orElseThrow(() -> new NoSuchElementException("cartItem not found"));
 
@@ -90,7 +90,7 @@ public class CartServiceImpl implements CartService {
     public void deleteCartItem(
             int userId,
             Integer cartItemId) throws AuthenticationException {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
+        User user = userDAO.findUserById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
 
         CartItem cartItem = cartItemDAO.findCartItemById(cartItemId)
                 .orElseThrow(() -> new NoSuchElementException("cartItem not found"));

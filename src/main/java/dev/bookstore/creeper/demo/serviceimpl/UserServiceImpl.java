@@ -4,21 +4,21 @@ import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 
+import dev.bookstore.creeper.demo.dao.UserDAO;
 import dev.bookstore.creeper.demo.model.User;
-import dev.bookstore.creeper.demo.repository.UserRepository;
 import dev.bookstore.creeper.demo.service.UserService;
 
 
 @Service
 public class UserServiceImpl implements UserService {
-    public final UserRepository userRepository;
+    public final UserDAO userDAO;
 
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserServiceImpl(UserDAO userDAO) {
+        this.userDAO = userDAO;
     }
 
     @Override
     public User getMe(int userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User not found."));
+        return userDAO.findUserById(userId).orElseThrow(() -> new NoSuchElementException("User not found."));
     }
 }
