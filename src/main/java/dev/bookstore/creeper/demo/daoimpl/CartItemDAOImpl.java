@@ -12,7 +12,11 @@ import dev.bookstore.creeper.demo.repository.CartItemRepository;
 
 @Component
 public class CartItemDAOImpl implements CartItemDAO {
-    private CartItemRepository cartItemRepository;
+    private final CartItemRepository cartItemRepository;
+
+    public CartItemDAOImpl(CartItemRepository cartItemRepository) {
+        this.cartItemRepository = cartItemRepository;
+    }
 
     @Override
     public Optional<CartItem> findCartItemByBookAndUser(Book book, User user) {
