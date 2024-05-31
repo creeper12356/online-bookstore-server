@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import dev.bookstore.creeper.demo.dto.RegisterRequestDTO;
 import dev.bookstore.creeper.demo.model.User;
+import dev.bookstore.creeper.demo.repository.UserAuthRepository;
 import dev.bookstore.creeper.demo.repository.UserRepository;
 import dev.bookstore.creeper.demo.service.AuthService;
 
@@ -15,14 +16,16 @@ import dev.bookstore.creeper.demo.service.AuthService;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
+    private final UserAuthRepository userAuthRepository;
 
-    public AuthServiceImpl(UserRepository userRepository) {
+    public AuthServiceImpl(UserRepository userRepository, UserAuthRepository userAuthRepository) {
         this.userRepository = userRepository;
+        this.userAuthRepository = userAuthRepository;
     }
 
-    public void register(RegisterRequestDTO requestDTO) throws IllegalArgumentException{
+    public void register(RegisterRequestDTO requestDTO) throws IllegalArgumentException {
         Optional<User> optionalUser = userRepository.findByUsername(requestDTO.getUsername());
-        if(optionalUser.isPresent()) {
+        if (optionalUser.isPresent()) {
             throw new IllegalArgumentException("Username already exists.");
         }
 
@@ -34,7 +37,8 @@ public class AuthServiceImpl implements AuthService {
         Optional<User> optionalUser = userRepository.findByUsername(requestDTO.getUsername());
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            if (user.getPassword().equals(requestDTO.getPassword())) {
+            if(userAuthRepository.findByUserAndPassword(user, requestDTO.getPassword()).isPresent()) {
+                // 在数据库内校验密码
                 return user;
             }
         }

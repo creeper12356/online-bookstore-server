@@ -4,12 +4,14 @@ package dev.bookstore.creeper.demo.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -24,8 +26,8 @@ public class User {
     @Column(name = "username")
     private String username;
 
-    @Column(name = "password")
-    private String password;
+    @OneToOne(cascade = CascadeType.ALL)
+    private UserAuth userAuth;
 
     @Column(name = "balance")
     private Integer balance;
@@ -42,7 +44,7 @@ public class User {
 
     public User(String username, String password) {
         this.username = username;
-        this.password = password;
+        this.userAuth = new UserAuth(this, password);
         this.balance = 0;
         this.cartItems = new ArrayList<>();
         this.orders = new ArrayList<>();
