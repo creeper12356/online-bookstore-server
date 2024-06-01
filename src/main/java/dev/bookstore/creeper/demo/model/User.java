@@ -29,6 +29,9 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     private UserAuth userAuth;
 
+    @Column(name = "email")
+    private String email;
+
     @Column(name = "balance")
     private Integer balance;
 
@@ -42,9 +45,10 @@ public class User {
         // not used
     }
 
-    public User(String username, String password) {
+    public User(String username, String password, String email) {
         this.username = username;
         this.userAuth = new UserAuth(this, password);
+        this.email = email;
         this.balance = 0;
         this.cartItems = new ArrayList<>();
         this.orders = new ArrayList<>();

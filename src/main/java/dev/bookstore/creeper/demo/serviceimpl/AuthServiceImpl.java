@@ -19,9 +19,8 @@ public class AuthServiceImpl implements AuthService {
     private final UserAuthDAO userAuthDAO;
 
     public AuthServiceImpl(
-        UserDAO userDAO,
-        UserAuthDAO userAuthDAO
-    ) {
+            UserDAO userDAO,
+            UserAuthDAO userAuthDAO) {
         this.userDAO = userDAO;
         this.userAuthDAO = userAuthDAO;
     }
@@ -32,7 +31,7 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("Username already exists.");
         }
 
-        User newUser = new User(requestDTO.getUsername(), requestDTO.getPassword());
+        User newUser = new User(requestDTO.getUsername(), requestDTO.getPassword(), requestDTO.getEmail());
         userDAO.saveUser(newUser);
     }
 
@@ -40,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
         Optional<User> optionalUser = userDAO.findUserByUsername(requestDTO.getUsername());
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            if(userAuthDAO.findUserAuthByUserAndPassword(user, requestDTO.getPassword()).isPresent()) {
+            if (userAuthDAO.findUserAuthByUserAndPassword(user, requestDTO.getPassword()).isPresent()) {
                 // 在数据库内校验密码
                 return user;
             }
