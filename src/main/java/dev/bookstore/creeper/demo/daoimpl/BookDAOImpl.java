@@ -32,5 +32,9 @@ public class BookDAOImpl implements BookDAO {
     public List<Book> findAllBooksById(List<Integer> ids) {
         return bookRepository.findAllById(ids);
     }
+    @Override
+    public void saveAllBooks(List<Book> books) {
+        bookRepository.saveAll(books);
+    }
     
 }

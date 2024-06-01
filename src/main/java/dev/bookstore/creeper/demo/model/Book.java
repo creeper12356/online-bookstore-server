@@ -39,6 +39,9 @@ public class Book {
     @Column(name = "sales")
     private Integer sales;
 
+    @Column(name = "stock")
+    private Integer stock;
+
     @OneToMany(cascade = CascadeType.ALL)    
     private List<Comment> comments;
 

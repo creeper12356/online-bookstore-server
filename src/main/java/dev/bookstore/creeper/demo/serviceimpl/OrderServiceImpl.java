@@ -76,8 +76,16 @@ public class OrderServiceImpl implements OrderService{
                 
         int bookSize = books.size();
         for(int i = 0;i < bookSize; ++i) {
+            if(books.get(i).getStock() < dto.getBooks().get(i).getNumber()) {
+                // 库存不足
+                throw new IllegalArgumentException("Stock not enough");
+            }
+            books.get(i).setStock(books.get(i).getStock() - dto.getBooks().get(i).getNumber());
+            books.get(i).setSales(books.get(i).getSales() + dto.getBooks().get(i).getNumber());
             orderItems.add(new OrderItem(books.get(i), dto.getBooks().get(i).getNumber(),order));
         }
+
+        bookDAO.saveAllBooks(books);
 
         orderDAO.saveOrder(order);
 

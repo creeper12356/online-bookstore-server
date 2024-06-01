@@ -52,6 +52,10 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 new GeneralResponseDTO(false, e.getMessage())
             );
+        } catch(IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                new GeneralResponseDTO(false, e.getMessage())
+            );
         }
     }
 

@@ -10,4 +10,5 @@ public interface BookDAO {
     Optional<Book> findBookById(Integer id);
     List<Book> findAllBooksById(List<Integer> ids);
     void saveBook(Book book);
+    void saveAllBooks(List<Book> books);
 }

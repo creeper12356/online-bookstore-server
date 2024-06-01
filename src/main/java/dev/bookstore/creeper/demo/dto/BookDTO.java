@@ -12,6 +12,7 @@ public class BookDTO {
     private Integer price;
     private String cover;
     private Integer sales;
+    private Integer stock;
     
     public BookDTO(Book book) {
         this.id = book.getId();
@@ -21,5 +22,6 @@ public class BookDTO {
         this.price = book.getPrice();
         this.cover = book.getCover();
         this.sales = book.getSales();
+        this.stock = book.getStock();
     }
 }
