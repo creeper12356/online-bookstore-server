@@ -30,8 +30,8 @@ public class BookServiceImpl implements BookService {
         ) {
         List<Book> bookList = bookDAO.findAllBooks()
             .stream()
-            .filter(book -> q.isEmpty() ? true :  book.getTitle()
-            .contains(q)).collect(Collectors.toList());
+            .filter(book -> q.isEmpty() ? true : book.getTitle().toLowerCase().contains(q.toLowerCase()))
+            .collect(Collectors.toList());
 
         return new GetAllBooksOkResponseDTO(
             bookList.size(), 
