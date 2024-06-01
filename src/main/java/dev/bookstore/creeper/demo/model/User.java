@@ -35,6 +35,9 @@ public class User {
     @Column(name = "balance")
     private Integer balance;
 
+    @Column(name = "avatar")
+    private String avatar;
+
     @OneToMany(mappedBy = "user")
     private List<CartItem> cartItems;
 
@@ -50,6 +53,7 @@ public class User {
         this.userAuth = new UserAuth(this, password);
         this.email = email;
         this.balance = 0;
+        this.avatar = "";
         this.cartItems = new ArrayList<>();
         this.orders = new ArrayList<>();
     }
