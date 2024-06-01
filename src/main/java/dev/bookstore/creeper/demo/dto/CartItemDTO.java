@@ -10,6 +10,7 @@ public class CartItemDTO {
     private String title;
     private Integer number;
     private Integer price;
+    private Integer stock;
     
     
     public CartItemDTO(CartItem cartItem) {
@@ -18,5 +19,6 @@ public class CartItemDTO {
         this.title = cartItem.getBook().getTitle();
         this.number = cartItem.getNumber();
         this.price = cartItem.getBook().getPrice();
+        this.stock = cartItem.getBook().getStock();
     }
 }
