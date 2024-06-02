@@ -15,7 +15,7 @@ public class OrderDTO {
     private String receiver;
     private String tel;
     private String address;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date time;
 
     public OrderDTO(Order order) {

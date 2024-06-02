@@ -1,6 +1,6 @@
 package dev.bookstore.creeper.demo.service;
 
-import java.sql.Date;
+import java.util.Date;
 
 import javax.naming.AuthenticationException;
 

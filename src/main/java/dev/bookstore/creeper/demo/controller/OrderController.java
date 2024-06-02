@@ -1,7 +1,7 @@
 package dev.bookstore.creeper.demo.controller;
 
-import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.NoSuchElementException;
 
 import javax.naming.AuthenticationException;
@@ -35,8 +35,7 @@ public class OrderController {
     @InitBinder
     public void InitBinder(WebDataBinder binder) {
         // 配置日期格式
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        dateFormat.setTimeZone(java.util.TimeZone.getTimeZone("GMT+8"));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
     }
 

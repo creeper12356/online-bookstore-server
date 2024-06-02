@@ -1,6 +1,6 @@
 package dev.bookstore.creeper.demo.serviceimpl;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -43,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
         if (from != null && to != null && from.after(to)) {
             throw new IllegalArgumentException("Invalid date range");
         }
-        
+
         List<OrderDTO> orders = user
                 .getOrders()
                 .stream()
