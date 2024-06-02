@@ -1,5 +1,6 @@
 package dev.bookstore.creeper.demo.model;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
@@ -55,6 +56,6 @@ public class Order {
         this.receiver = receiver;
         this.tel = tel;
         this.address = address;
-        this.time = new Date();
+        this.time = Date.from(Instant.now());
     }
 }

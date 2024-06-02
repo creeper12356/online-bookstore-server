@@ -3,6 +3,8 @@ package dev.bookstore.creeper.demo.dto;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import dev.bookstore.creeper.demo.model.Order;
 import lombok.Data;
 
@@ -13,6 +15,7 @@ public class OrderDTO {
     private String receiver;
     private String tel;
     private String address;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date time;
 
     public OrderDTO(Order order) {
