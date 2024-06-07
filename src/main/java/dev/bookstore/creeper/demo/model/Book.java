@@ -31,6 +31,9 @@ public class Book {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "isbn")
+    private String isbn;
+
     @Column(name = "price")
     private Integer price;
 
@@ -49,20 +52,12 @@ public class Book {
     public Book() {
         // not used
     }
-    public Book(Integer id, String title, String author, String description, Integer price, String cover, Integer sales) {
-        this.id = id;
-        this.title = title;
-        this.author = author;
-        this.description = description;
-        this.price = price;
-        this.cover = cover;
-        this.sales = sales;
-    }
 
     public void updateInfo(UpdateBookInfoDTO dto) {
         this.title = dto.getTitle();
         this.author = dto.getAuthor();
         this.description = dto.getDescription();
+        this.isbn = dto.getIsbn();
         this.price = dto.getPrice();
         this.cover = dto.getCover();
         this.sales = dto.getSales();

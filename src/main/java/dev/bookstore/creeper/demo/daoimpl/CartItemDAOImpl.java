@@ -1,5 +1,6 @@
 package dev.bookstore.creeper.demo.daoimpl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
@@ -36,5 +37,10 @@ public class CartItemDAOImpl implements CartItemDAO {
     @Override
     public void deleteCartItem(CartItem cartItem) {
         cartItemRepository.delete(cartItem);
+    }
+
+    @Override
+    public List<CartItem> findAllCartItemsByBook(Book book) {
+        return cartItemRepository.findAllByBook(book);
     }
 }

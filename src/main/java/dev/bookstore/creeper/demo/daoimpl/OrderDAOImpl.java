@@ -19,5 +19,4 @@ public class OrderDAOImpl implements OrderDAO {
     public void saveOrder(Order order) {
         orderRepository.save(order);
     }
-    
 }

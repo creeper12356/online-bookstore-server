@@ -7,6 +7,7 @@ public class UpdateBookInfoDTO {
     private String title;
     private String author;
     private String description;
+    private String isbn;
     private Integer price;
     private String cover;
     private Integer sales;

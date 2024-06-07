@@ -8,12 +8,17 @@ import javax.naming.AuthenticationException;
 
 import org.springframework.stereotype.Service;
 
+
 import dev.bookstore.creeper.demo.dao.BookDAO;
+import dev.bookstore.creeper.demo.dao.CartItemDAO;
+import dev.bookstore.creeper.demo.dao.OrderItemDAO;
 import dev.bookstore.creeper.demo.dao.UserDAO;
 import dev.bookstore.creeper.demo.dto.GetAllBooksOkResponseDTO;
 import dev.bookstore.creeper.demo.dto.UpdateBookInfoDTO;
 import dev.bookstore.creeper.demo.model.Book;
+import dev.bookstore.creeper.demo.model.CartItem;
 import dev.bookstore.creeper.demo.model.Comment;
+import dev.bookstore.creeper.demo.model.OrderItem;
 import dev.bookstore.creeper.demo.model.User;
 import dev.bookstore.creeper.demo.service.BookService;
 import dev.bookstore.creeper.demo.utils.PaginationUtils;
@@ -23,11 +28,17 @@ import dev.bookstore.creeper.demo.utils.PaginationUtils;
 public class BookServiceImpl implements BookService {
     private final BookDAO bookDAO;
     private final UserDAO userDAO;
+    private final OrderItemDAO orderItemDAO;
+    private final CartItemDAO cartItemDAO;
 
-    public BookServiceImpl(BookDAO bookDAO, UserDAO userDAO) {
+
+    public BookServiceImpl(BookDAO bookDAO, UserDAO userDAO, OrderItemDAO orderItemDAO, CartItemDAO cartItemDAO) {
         this.bookDAO = bookDAO;
         this.userDAO = userDAO;
+        this.orderItemDAO = orderItemDAO;
+        this.cartItemDAO = cartItemDAO;
     }
+
 
     @Override
     public GetAllBooksOkResponseDTO getAllBooks(
@@ -88,6 +99,17 @@ public class BookServiceImpl implements BookService {
             throw new AuthenticationException("User is not an admin");
         }
         Book book = bookDAO.findBookById(bookId).orElseThrow(() -> new NoSuchElementException("Book with id " + bookId + " not found"));
+        
+        List<CartItem> affectedCartItems = cartItemDAO.findAllCartItemsByBook(book);
+        for(CartItem cartItem : affectedCartItems) {
+            cartItemDAO.deleteCartItem(cartItem);
+        }
+
+        List<OrderItem> affecOrderItems = orderItemDAO.findAllOrderItemsByBook(book);
+        for(OrderItem orderItem : affecOrderItems) {
+            orderItemDAO.deleteOrderItem(orderItem);
+        }
+
         bookDAO.deleteBook(book);
     }
     

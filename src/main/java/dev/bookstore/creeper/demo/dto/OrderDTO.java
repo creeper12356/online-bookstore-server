@@ -24,10 +24,11 @@ public class OrderDTO {
         this.books = order
             .getOrderItems()
             .stream()
+            .filter(orderItem -> orderItem.getBook() != null)
             .map(
                 orderItem -> new OrderBookDTO(
                     orderItem.getBook(), 
-                    orderItem.getNumber()
+                    orderItem.getNumber() 
                 )
             )
             .toList();

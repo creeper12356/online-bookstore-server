@@ -39,6 +39,7 @@ public class CartServiceImpl implements CartService {
         User user = userDAO.findUserById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
         List<CartItemDTO> cartItems = user.getCartItems()
                 .stream()
+                .filter(cartItem -> cartItem.getBook() != null)
                 .map(
                         cartItem -> new CartItemDTO(cartItem))
                 .sorted(Comparator.comparing(CartItemDTO::getId).reversed())
