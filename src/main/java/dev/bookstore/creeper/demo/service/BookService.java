@@ -11,7 +11,8 @@ public interface BookService {
     GetAllBooksOkResponseDTO getAllBooks(String q, Integer page, Integer pagesize);
     Book getBookInfo(Integer id);
     List<Comment> getBookComments(Integer id);
-    void createBookComment(Integer id, String content);
+    Integer createBook(Integer userId, UpdateBookInfoDTO book) throws Exception;
     void updateBookInfo(Integer userId, Integer bookId, UpdateBookInfoDTO book) throws Exception;
     void deleteBook(Integer userId, Integer bookId) throws Exception;
+    void createBookComment(Integer id, String content);
 }

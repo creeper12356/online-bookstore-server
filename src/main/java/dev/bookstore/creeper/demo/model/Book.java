@@ -53,6 +53,10 @@ public class Book {
         // not used
     }
 
+    public Book(UpdateBookInfoDTO dto) {
+        this.updateInfo(dto);
+    }
+
     public void updateInfo(UpdateBookInfoDTO dto) {
         this.title = dto.getTitle();
         this.author = dto.getAuthor();
@@ -60,7 +64,7 @@ public class Book {
         this.isbn = dto.getIsbn();
         this.price = dto.getPrice();
         this.cover = dto.getCover();
-        this.sales = dto.getSales();
         this.stock = dto.getStock();
+        this.sales = 0;
     }
 }

@@ -10,6 +10,5 @@ public class UpdateBookInfoDTO {
     private String isbn;
     private Integer price;
     private String cover;
-    private Integer sales;
     private Integer stock;
 }

@@ -5,6 +5,7 @@ import dev.bookstore.creeper.demo.dto.GeneralResponseDTO;
 import dev.bookstore.creeper.demo.dto.GetBookCommentsOkResponseDTO;
 import dev.bookstore.creeper.demo.dto.UpdateBookInfoDTO;
 import dev.bookstore.creeper.demo.dto.CreateBookCommentRequestDTO;
+import dev.bookstore.creeper.demo.dto.CreateBookOkResponseDTO;
 import dev.bookstore.creeper.demo.service.BookService;
 import dev.bookstore.creeper.demo.utils.SessionUtils;
 
@@ -42,6 +43,25 @@ public class BookController {
             return ResponseEntity.ok(new BookDTO(service.getBookInfo(id)));
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new GeneralResponseDTO(false, e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GeneralResponseDTO(false, e.getMessage()));
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<Object> createBook(
+            @RequestBody UpdateBookInfoDTO dto) {
+        try {
+            Integer newBookId = service.createBook(SessionUtils.getSessionUserId(), dto);
+            return ResponseEntity.ok(
+                new CreateBookOkResponseDTO(
+                    true, 
+                    "Book created successfully", 
+                    newBookId
+                )
+            );
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new GeneralResponseDTO(false, e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GeneralResponseDTO(false, e.getMessage()));
         }

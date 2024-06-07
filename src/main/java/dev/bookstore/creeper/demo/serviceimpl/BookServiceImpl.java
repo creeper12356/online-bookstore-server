@@ -66,17 +66,29 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Comment> getBookComments(Integer id) {
         return bookDAO.findBookById(id)
-            .orElseThrow(() -> new NoSuchElementException("Book with id " + id + " not found"))
-            .getComments();
+        .orElseThrow(() -> new NoSuchElementException("Book with id " + id + " not found"))
+        .getComments();
     }
-
+    
     @Override
     public void createBookComment(Integer id, String content) {
         Book book = bookDAO.findBookById(id).orElseThrow(() -> new NoSuchElementException("Book with id " + id + " not found"));
         book.getComments().add(new Comment("username", content));
         bookDAO.saveBook(book);
     }
+    
+    @Override
+    public Integer createBook(Integer userId, UpdateBookInfoDTO book) throws Exception {
+        User user = userDAO.findUserById(userId).orElseThrow(() -> new NoSuchElementException("User with id " + userId + " not found"));
+        if(!user.getIsAdmin()) {
+            throw new AuthenticationException("User is not an admin");
+        }
+        Book newBook = new Book(book);
+        bookDAO.saveBook(newBook);
 
+        return newBook.getId();
+    }
+    
     @Override
     public void updateBookInfo(
         Integer userId, 
@@ -112,5 +124,7 @@ public class BookServiceImpl implements BookService {
 
         bookDAO.deleteBook(book);
     }
+
+
     
 }
