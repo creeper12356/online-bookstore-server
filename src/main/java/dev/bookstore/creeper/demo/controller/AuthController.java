@@ -5,6 +5,7 @@ import javax.naming.AuthenticationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +15,7 @@ import dev.bookstore.creeper.demo.dto.RegisterRequestDTO;
 import dev.bookstore.creeper.demo.model.User;
 import dev.bookstore.creeper.demo.service.AuthService;
 import dev.bookstore.creeper.demo.utils.SessionUtils;
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -52,5 +54,11 @@ public class AuthController {
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(new GeneralResponseDTO(false, e.getMessage()));
         }
+    }
+
+    @PutMapping("/logout")
+    public ResponseEntity<Object> logout() {
+        SessionUtils.getSession().invalidate();
+        return ResponseEntity.ok(new GeneralResponseDTO(true, "Logout successful"));
     }
 }
