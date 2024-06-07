@@ -3,6 +3,7 @@ package dev.bookstore.creeper.demo.model;
 
 import java.util.List;
 
+import dev.bookstore.creeper.demo.dto.UpdateBookInfoDTO;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -56,5 +57,15 @@ public class Book {
         this.price = price;
         this.cover = cover;
         this.sales = sales;
+    }
+
+    public void updateInfo(UpdateBookInfoDTO dto) {
+        this.title = dto.getTitle();
+        this.author = dto.getAuthor();
+        this.description = dto.getDescription();
+        this.price = dto.getPrice();
+        this.cover = dto.getCover();
+        this.sales = dto.getSales();
+        this.stock = dto.getStock();
     }
 }

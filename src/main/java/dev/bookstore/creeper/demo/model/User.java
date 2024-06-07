@@ -38,6 +38,9 @@ public class User {
     @Column(name = "avatar")
     private String avatar;
 
+    @Column(name = "is_admin")
+    private Boolean isAdmin;
+
     @OneToMany(mappedBy = "user")
     private List<CartItem> cartItems;
 
@@ -48,12 +51,13 @@ public class User {
         // not used
     }
 
-    public User(String username, String password, String email) {
+    public User(String username, String password, String email, Boolean isAdmin) {
         this.username = username;
         this.userAuth = new UserAuth(this, password);
         this.email = email;
         this.balance = 0;
         this.avatar = "";
+        this.isAdmin = isAdmin;
         this.cartItems = new ArrayList<>();
         this.orders = new ArrayList<>();
     }

@@ -15,7 +15,6 @@ import dev.bookstore.creeper.demo.dto.RegisterRequestDTO;
 import dev.bookstore.creeper.demo.model.User;
 import dev.bookstore.creeper.demo.service.AuthService;
 import dev.bookstore.creeper.demo.utils.SessionUtils;
-import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/api/auth")

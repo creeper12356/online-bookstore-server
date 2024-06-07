@@ -36,5 +36,9 @@ public class BookDAOImpl implements BookDAO {
     public void saveAllBooks(List<Book> books) {
         bookRepository.saveAll(books);
     }
+    @Override
+    public void deleteBook(Book book) {
+        bookRepository.delete(book);
+    }
     
 }

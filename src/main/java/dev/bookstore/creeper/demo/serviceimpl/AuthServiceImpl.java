@@ -31,7 +31,7 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("Username already exists.");
         }
 
-        User newUser = new User(requestDTO.getUsername(), requestDTO.getPassword(), requestDTO.getEmail());
+        User newUser = new User(requestDTO.getUsername(), requestDTO.getPassword(), requestDTO.getEmail(), true);
         userDAO.saveUser(newUser);
     }
 

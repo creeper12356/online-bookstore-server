@@ -15,6 +15,7 @@ public class OrderDTO {
     private String receiver;
     private String tel;
     private String address;
+    private Integer totalPrice;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
     private Date time;
 
@@ -35,5 +36,10 @@ public class OrderDTO {
         this.tel = order.getTel();
         this.address = order.getAddress();
         this.time = order.getTime();
+        this.totalPrice = order.getOrderItems().stream()
+            .mapToInt(
+                orderItem -> orderItem.getBook().getPrice() * orderItem.getNumber()
+            )
+            .sum();
     }
 }
