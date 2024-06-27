@@ -37,7 +37,7 @@ public class FileUploadController {
 
             // 使用Unirest发送请求给图片服务器
             Unirest.setTimeouts(0, 0);
-            HttpResponse<String> response = Unirest.post("http://10.119.12.131:10339/upload")
+            HttpResponse<String> response = Unirest.post("http://localhost:10339/upload")
                     .header("User-Agent", "Apifox/1.0.0 (https://apifox.com)")
                     .header("Content-Type", "multipart/form-data")
                     .field("file", tempFile)
