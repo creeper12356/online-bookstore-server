@@ -4,18 +4,14 @@ import dev.bookstore.creeper.demo.model.User;
 import lombok.Data;
 
 @Data
-public class UserDTO {
+public class UserBriefDTO {
+    private Integer id;
     private String username;
-    private String email;
-    private Integer balance;
     private String avatar;
-    private Boolean isAdmin;
 
-    public UserDTO(User user) {
+    public UserBriefDTO(User user) {
+        this.id = user.getId();
         this.username = user.getUsername();
-        this.balance = user.getBalance();
-        this.email = user.getEmail();
         this.avatar = user.getAvatar();
-        this.isAdmin = user.getIsAdmin();
     }
 }

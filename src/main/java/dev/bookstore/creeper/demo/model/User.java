@@ -41,6 +41,9 @@ public class User {
     @Column(name = "is_admin")
     private Boolean isAdmin;
 
+    @Column(name = "is_banned")
+    private Boolean isBanned;
+
     @OneToMany(mappedBy = "user")
     private List<CartItem> cartItems;
 
@@ -58,6 +61,7 @@ public class User {
         this.balance = 0;
         this.avatar = "";
         this.isAdmin = isAdmin;
+        this.isBanned = false;
         this.cartItems = new ArrayList<>();
         this.orders = new ArrayList<>();
     }

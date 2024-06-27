@@ -1,5 +1,6 @@
 package dev.bookstore.creeper.demo.daoimpl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
@@ -26,6 +27,10 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public void saveUser(User user) {
         userRepository.save(user);
+    }
+    @Override
+    public List<User> findAllUsers() {
+        return userRepository.findAll();
     }
     
 }

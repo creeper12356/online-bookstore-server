@@ -56,6 +56,7 @@ public class OrderController {
         }
     }
 
+
     @PostMapping
     public ResponseEntity<Object> createOrder(
             @RequestBody CreateOrderRequestDTO dto) {
@@ -70,6 +71,26 @@ public class OrderController {
                     new GeneralResponseDTO(false, e.getMessage()));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new GeneralResponseDTO(false, e.getMessage()));
+        }
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<Object> getAllOrders(
+        @RequestParam(defaultValue = "") String q,
+        @RequestParam(required = false) Date from,
+        @RequestParam(required = false) Date to
+    ) {
+        try {
+            return ResponseEntity.ok(orderService.getAllOrders(SessionUtils.getSessionUserId(), q, from, to));
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                    new GeneralResponseDTO(false, e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new GeneralResponseDTO(false, e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                     new GeneralResponseDTO(false, e.getMessage()));
         }
     }

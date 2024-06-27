@@ -15,6 +15,7 @@ import dev.bookstore.creeper.demo.dto.CreateCartItemRequestDTO;
 import dev.bookstore.creeper.demo.dto.CreateOrderRequestDTO;
 import dev.bookstore.creeper.demo.dto.GetItemsOkDTO;
 import dev.bookstore.creeper.demo.dto.OrderDTO;
+import dev.bookstore.creeper.demo.dto.OrderUserDTO;
 import dev.bookstore.creeper.demo.model.Book;
 import dev.bookstore.creeper.demo.model.Order;
 import dev.bookstore.creeper.demo.model.OrderItem;
@@ -99,5 +100,31 @@ public class OrderServiceImpl implements OrderService {
         orderDAO.saveOrder(order);
 
         user.getOrders().add(order);
+    }
+
+    @Override
+    public GetItemsOkDTO<OrderUserDTO> getAllOrders(int userId, String query, Date from, Date to) throws Exception {
+        User user = userDAO.findUserById(userId).orElseThrow(() -> new NoSuchElementException("User not found."));
+        if (!user.getIsAdmin()) {
+            throw new IllegalArgumentException("Permission denied");
+        }
+
+        if (from != null && to != null && from.after(to)) {
+            throw new IllegalArgumentException("Invalid date range");
+        }
+
+        List<OrderUserDTO> orders = orderDAO
+                .findAllOrders()
+                .stream()
+                .filter(order -> query.equals("")
+                        || order.getOrderItems().stream().anyMatch(
+                                item -> item.getBook().getTitle().toLowerCase().contains(query.toLowerCase())))
+                .filter(order -> from == null || order.getTime().equals(from) || order.getTime().after(from))
+                .filter(order -> to == null || order.getTime().equals(to) || order.getTime().before(to))
+                .map(order -> new OrderUserDTO(order))
+                .sorted(Comparator.comparing(OrderUserDTO::getId).reversed())
+                .toList();
+
+        return new GetItemsOkDTO<>(orders.size(), orders);
     }
 }

@@ -1,5 +1,7 @@
 package dev.bookstore.creeper.demo.daoimpl;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import dev.bookstore.creeper.demo.dao.OrderDAO;
@@ -18,5 +20,11 @@ public class OrderDAOImpl implements OrderDAO {
     @Override
     public void saveOrder(Order order) {
         orderRepository.save(order);
+    }
+
+
+    @Override
+    public List<Order> findAllOrders() {
+        return orderRepository.findAll();
     }
 }

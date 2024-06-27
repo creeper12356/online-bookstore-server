@@ -41,6 +41,10 @@ public class AuthServiceImpl implements AuthService {
             User user = optionalUser.get();
             if (userAuthDAO.findUserAuthByUserAndPassword(user, requestDTO.getPassword()).isPresent()) {
                 // 在数据库内校验密码
+                
+                if(user.getIsBanned()) {
+                    throw new AuthenticationException("Banned user cannot login.");
+                }
                 return user;
             }
         }

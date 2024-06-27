@@ -7,6 +7,7 @@ import javax.naming.AuthenticationException;
 import dev.bookstore.creeper.demo.dto.CreateOrderRequestDTO;
 import dev.bookstore.creeper.demo.dto.GetItemsOkDTO;
 import dev.bookstore.creeper.demo.dto.OrderDTO;
+import dev.bookstore.creeper.demo.dto.OrderUserDTO;
 
 public interface OrderService {
 
@@ -27,4 +28,16 @@ public interface OrderService {
      * @throws AuthenticationException 创建订单失败，抛出异常
      */
     void createOrder(int userId, CreateOrderRequestDTO dto); 
+
+
+    /**
+     * @brief 获取系统所有订单
+     * @param userId 当前用户id（管理员））
+     * @param query 查询关键字，为""表示不进行筛选
+     * @param from 订单创建时间下界，为null表示无下界
+     * @param to 订单创建时间上界，为null表示无上界
+     * @return
+     */
+    GetItemsOkDTO<OrderUserDTO> getAllOrders(int userId, String query, Date from, Date to) throws Exception ;
+
 }
