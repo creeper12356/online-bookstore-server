@@ -9,11 +9,15 @@ import dev.bookstore.creeper.demo.dto.CreateBookOkResponseDTO;
 import dev.bookstore.creeper.demo.service.BookService;
 import dev.bookstore.creeper.demo.utils.SessionUtils;
 
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.NoSuchElementException;
 
 import javax.naming.AuthenticationException;
@@ -25,6 +29,13 @@ public class BookController {
 
     public BookController(BookService service) {
         this.service = service;
+    }
+
+    @InitBinder
+    public void InitBinder(WebDataBinder binder) {
+        // 配置日期格式
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
     }
 
     @GetMapping
@@ -54,12 +65,10 @@ public class BookController {
         try {
             Integer newBookId = service.createBook(SessionUtils.getSessionUserId(), dto);
             return ResponseEntity.ok(
-                new CreateBookOkResponseDTO(
-                    true, 
-                    "Book created successfully", 
-                    newBookId
-                )
-            );
+                    new CreateBookOkResponseDTO(
+                            true,
+                            "Book created successfully",
+                            newBookId));
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new GeneralResponseDTO(false, e.getMessage()));
         } catch (Exception e) {
@@ -119,6 +128,18 @@ public class BookController {
             return ResponseEntity.ok(new GeneralResponseDTO(true, "Comment created successfully"));
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new GeneralResponseDTO(false, e.getMessage()));
+        }
+    }
+
+    @GetMapping("/rank")
+    public ResponseEntity<Object> getBookRank(
+            @RequestParam(required = false) Date from,
+            @RequestParam(required = false) Date to,
+            @RequestParam(defaultValue = "10") Integer maxcount) {
+        try {
+            return ResponseEntity.ok(service.getBookRank(SessionUtils.getSessionUserId(), from, to, maxcount));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GeneralResponseDTO(false, e.getMessage()));
         }
     }
 
