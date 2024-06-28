@@ -3,6 +3,7 @@ package dev.bookstore.creeper.demo.service;
 import java.util.Date;
 import java.util.List;
 
+import dev.bookstore.creeper.demo.dto.BookSalesDTO;
 import dev.bookstore.creeper.demo.dto.GetItemsOkDTO;
 import dev.bookstore.creeper.demo.dto.UserPurchaseDTO;
 import dev.bookstore.creeper.demo.model.User;
@@ -45,4 +46,15 @@ public interface UserService {
      * @throws Exception
      */
     GetItemsOkDTO<UserPurchaseDTO> getUserRank(Integer currentUserId, Date from, Date to, Integer maxcount) throws Exception;
+
+
+    /**
+     * @brief 获取用户在一定时间内消费的统计数据
+     * @param currentUserId
+     * @param from
+     * @param to
+     * @return
+     * @throws Exception
+     */
+    GetItemsOkDTO<BookSalesDTO> getUserStatistic(Integer currentUserId, Date from, Date to) throws Exception;
 }

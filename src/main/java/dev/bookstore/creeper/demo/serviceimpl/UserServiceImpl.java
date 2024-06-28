@@ -13,9 +13,12 @@ import org.springframework.stereotype.Service;
 
 import dev.bookstore.creeper.demo.dao.OrderDAO;
 import dev.bookstore.creeper.demo.dao.UserDAO;
+import dev.bookstore.creeper.demo.dto.BookSalesDTO;
 import dev.bookstore.creeper.demo.dto.GetItemsOkDTO;
 import dev.bookstore.creeper.demo.dto.UserPurchaseDTO;
+import dev.bookstore.creeper.demo.model.Book;
 import dev.bookstore.creeper.demo.model.Order;
+import dev.bookstore.creeper.demo.model.OrderItem;
 import dev.bookstore.creeper.demo.model.User;
 import dev.bookstore.creeper.demo.service.UserService;
 
@@ -126,5 +129,38 @@ public class UserServiceImpl implements UserService {
                 .limit(maxCount)
                 .collect(Collectors.toList());
         return new GetItemsOkDTO<>(userPurchaseList.size(), userPurchaseList);
+    }
+
+    @Override
+    public GetItemsOkDTO<BookSalesDTO> getUserStatistic(Integer currentUserId, Date from, Date to) throws Exception {
+        User currentUser = userDAO.findUserById(currentUserId).orElseThrow(() -> new NoSuchElementException());
+
+        List<Order> userOrders = currentUser
+                .getOrders()
+                .stream()
+                .filter(order -> from == null || order.getTime().after(from))
+                .filter(order -> to == null || order.getTime().before(to))
+                .collect(Collectors.toList());
+
+        // 统计每本书购买的数量
+        Map<Book, Integer> bookSaleMap = new HashMap<>();
+        for(Order order: userOrders) {
+            for(OrderItem orderItem: order.getOrderItems()) {
+                if(bookSaleMap.containsKey(orderItem.getBook())) {
+                    bookSaleMap.put(orderItem.getBook(), bookSaleMap.get(orderItem.getBook()) + orderItem.getNumber());
+                } else {
+                    bookSaleMap.put(orderItem.getBook(), orderItem.getNumber());
+                }
+            }
+        }
+
+        // 转成列表
+        List<BookSalesDTO> bookSalesDTOs = bookSaleMap.entrySet()
+                .stream()
+                .map(entry -> new BookSalesDTO(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+
+        return new GetItemsOkDTO<>(bookSalesDTOs.size(), bookSalesDTOs);
+
     }
 }

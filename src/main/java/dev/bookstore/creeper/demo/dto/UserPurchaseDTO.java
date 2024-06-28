@@ -9,7 +9,7 @@ public class UserPurchaseDTO {
     private String username;
     private String avatar;
     private String email;
-    Integer purchase;
+    private Integer purchase;
 
     public UserPurchaseDTO(User user, Integer purchase) {
         this.id = user.getId();

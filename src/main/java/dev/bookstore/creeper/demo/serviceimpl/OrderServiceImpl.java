@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import dev.bookstore.creeper.demo.dao.BookDAO;
 import dev.bookstore.creeper.demo.dao.OrderDAO;
 import dev.bookstore.creeper.demo.dao.UserDAO;
-import dev.bookstore.creeper.demo.dto.BookDTO;
 import dev.bookstore.creeper.demo.dto.CreateCartItemRequestDTO;
 import dev.bookstore.creeper.demo.dto.CreateOrderRequestDTO;
 import dev.bookstore.creeper.demo.dto.GetItemsOkDTO;
@@ -84,6 +83,7 @@ public class OrderServiceImpl implements OrderService {
                 dto.getAddress());
 
         int bookSize = books.size();
+        int totalPrice = 0;
         for (int i = 0; i < bookSize; ++i) {
             if (books.get(i).getStock() < dto.getBooks().get(i).getNumber()) {
                 // 库存不足
@@ -91,8 +91,15 @@ public class OrderServiceImpl implements OrderService {
             }
             books.get(i).setStock(books.get(i).getStock() - dto.getBooks().get(i).getNumber());
             books.get(i).setSales(books.get(i).getSales() + dto.getBooks().get(i).getNumber());
+            totalPrice += books.get(i).getPrice() * dto.getBooks().get(i).getNumber();
             orderItems.add(new OrderItem(books.get(i), dto.getBooks().get(i).getNumber(), order));
         }
+
+        if(user.getBalance() < totalPrice) {
+            throw new IllegalArgumentException("Balance not enough");
+        }
+        user.setBalance(user.getBalance() - totalPrice);
+        userDAO.saveUser(user);
 
         bookDAO.saveAllBooks(books);
 

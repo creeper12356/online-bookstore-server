@@ -5,15 +5,19 @@ import lombok.Data;
 
 @Data
 public class BookSalesDTO {
-    Integer id;
-    String title;
-    String cover;
-    Integer sales;
+    private Integer id;
+    private String title;
+    private String cover;
+    private Integer price;
+    private Integer sales;
+    private Integer totalPrice;
 
     public BookSalesDTO(Book book, Integer sales) {
         this.id = book.getId();
         this.title = book.getTitle();
         this.cover = book.getCover();
+        this.price = book.getPrice();
         this.sales = sales;
+        this.totalPrice = book.getPrice() * sales;
     }
 }

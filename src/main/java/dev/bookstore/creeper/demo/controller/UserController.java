@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import dev.bookstore.creeper.demo.dto.BookSalesDTO;
 import dev.bookstore.creeper.demo.dto.GeneralResponseDTO;
 import dev.bookstore.creeper.demo.dto.GetItemsOkDTO;
 import dev.bookstore.creeper.demo.dto.UserProfileDTO;
@@ -154,6 +155,24 @@ public class UserController {
                             .status(HttpStatus.BAD_REQUEST)
                             .body(new GeneralResponseDTO(false, e.getMessage()));
                 }
+    }
+
+    @GetMapping("/statistic")
+    public GetItemsOkDTO<BookSalesDTO> getUserStatistic(
+        @RequestParam(required = false) Date from,
+        @RequestParam(required = false) Date to
+    ) {
+        try {
+            return userService.getUserStatistic(
+                SessionUtils.getSessionUserId(),
+                from,
+                to
+            );
+        } catch(AuthenticationException e) {
+            throw new RuntimeException(e.getMessage());
+        } catch(Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
 }
