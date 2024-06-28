@@ -58,4 +58,12 @@ public class Order {
         this.address = address;
         this.time = Date.from(Instant.now());
     }
+
+    public Integer getTotalPrice() {
+        return this.orderItems.stream()
+            .mapToInt(
+                orderItem -> orderItem.getBook().getPrice() * orderItem.getNumber()
+            )
+            .sum();
+    }
 }

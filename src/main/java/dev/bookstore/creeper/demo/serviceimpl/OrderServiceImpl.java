@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import dev.bookstore.creeper.demo.dao.BookDAO;
 import dev.bookstore.creeper.demo.dao.OrderDAO;
 import dev.bookstore.creeper.demo.dao.UserDAO;
+import dev.bookstore.creeper.demo.dto.BookDTO;
 import dev.bookstore.creeper.demo.dto.CreateCartItemRequestDTO;
 import dev.bookstore.creeper.demo.dto.CreateOrderRequestDTO;
 import dev.bookstore.creeper.demo.dto.GetItemsOkDTO;
@@ -70,12 +71,10 @@ public class OrderServiceImpl implements OrderService {
                 .stream()
                 .map(CreateCartItemRequestDTO::getBookId)
                 .toList();
-        List<Book> books = bookDAO.findAllBooksById(bookIds);
-
-        if (books.size() != bookIds.size()) {
-            // 有书籍不存在
-            throw new NoSuchElementException("Book not found");
-        }
+        List<Book> books = bookIds.stream().map(
+                bookId -> bookDAO.findBookById(bookId)
+                        .orElseThrow(() -> new NoSuchElementException("Book not found")))
+                .toList();
 
         Order order = new Order(
                 orderItems,

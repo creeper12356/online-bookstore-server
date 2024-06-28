@@ -3,6 +3,7 @@ package dev.bookstore.creeper.demo.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -64,5 +65,10 @@ public class User {
         this.isBanned = false;
         this.cartItems = new ArrayList<>();
         this.orders = new ArrayList<>();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username);
     }
 }

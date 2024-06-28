@@ -138,7 +138,10 @@ public class BookController {
             @RequestParam(defaultValue = "10") Integer maxcount) {
         try {
             return ResponseEntity.ok(service.getBookRank(SessionUtils.getSessionUserId(), from, to, maxcount));
-        } catch (Exception e) {
+        } catch(AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new GeneralResponseDTO(false, e.getMessage()));
+        } 
+        catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GeneralResponseDTO(false, e.getMessage()));
         }
     }

@@ -140,7 +140,13 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public GetItemsOkDTO<BookSalesDTO> getBookRank(Integer currentUserId, Date from, Date to, Integer maxCount) {
+    public GetItemsOkDTO<BookSalesDTO> getBookRank(Integer currentUserId, Date from, Date to, Integer maxCount) throws Exception {
+        User currentUser = userDAO.findUserById(currentUserId)
+                .orElseThrow(() -> new NoSuchElementException("User not found."));
+        if (!currentUser.getIsAdmin()) {
+            throw new AuthenticationException("Permission denied.");
+        }
+        
         List<Order> orders = orderDAO.findAllOrders()
                 .stream()
                 .filter(order -> from == null || order.getTime().after(from))
@@ -162,7 +168,7 @@ public class BookServiceImpl implements BookService {
         // 将每本书按销量排序
         List<Map.Entry<Book, Integer>> sortedBookSales = bookSales.entrySet()
                 .stream()
-                .sorted((book, sales) -> sales.getValue().compareTo(book.getValue()))
+                .sorted((entry1, entry2) -> entry2.getValue().compareTo(entry1.getValue()))
                 .collect(Collectors.toList());
 
         List<BookSalesDTO> bookSalesList = sortedBookSales

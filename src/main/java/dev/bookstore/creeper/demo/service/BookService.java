@@ -20,5 +20,5 @@ public interface BookService {
     void createBookComment(Integer id, String content);
 
 
-    GetItemsOkDTO<BookSalesDTO> getBookRank(Integer currentUserId, Date from, Date to, Integer maxCount);
+    GetItemsOkDTO<BookSalesDTO> getBookRank(Integer currentUserId, Date from, Date to, Integer maxCount)  throws Exception;
 }
