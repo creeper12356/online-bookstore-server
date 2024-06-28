@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import dev.bookstore.creeper.demo.dto.BookSalesDTO;
 import dev.bookstore.creeper.demo.dto.GeneralResponseDTO;
 import dev.bookstore.creeper.demo.dto.GetItemsOkDTO;
+import dev.bookstore.creeper.demo.dto.UpdateUserInfoDTO;
 import dev.bookstore.creeper.demo.dto.UserProfileDTO;
 import dev.bookstore.creeper.demo.model.User;
 import dev.bookstore.creeper.demo.service.UserService;
@@ -80,6 +83,27 @@ public class UserController {
                     .toList();
             return ResponseEntity
                     .ok(new GetItemsOkDTO<>(userProfiles.size(), userProfiles));
+        } catch (AuthenticationException e) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(new GeneralResponseDTO(false, e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new GeneralResponseDTO(false, e.getMessage()));
+        }
+    }
+
+    @PutMapping
+    public ResponseEntity<Object> updateUserInfo(@RequestBody UpdateUserInfoDTO dto) {
+        try {
+            userService.updateUserInfo(SessionUtils.getSessionUserId(), dto.getUsername(), dto.getEmail(), dto.getAvatar());
+            return ResponseEntity
+                    .ok(new GeneralResponseDTO(true, "User info updated"));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(new GeneralResponseDTO(false, e.getMessage()));
         } catch (AuthenticationException e) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)

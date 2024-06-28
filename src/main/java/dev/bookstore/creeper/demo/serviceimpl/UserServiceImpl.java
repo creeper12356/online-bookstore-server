@@ -163,4 +163,14 @@ public class UserServiceImpl implements UserService {
         return new GetItemsOkDTO<>(bookSalesDTOs.size(), bookSalesDTOs);
 
     }
+
+    @Override
+    public void updateUserInfo(Integer userId, String username, String email, String avatar) throws Exception {
+        User currentUser = userDAO.findUserById(userId).orElseThrow(() -> new NoSuchElementException("User not found."));
+
+        currentUser.setUsername(username);
+        currentUser.setEmail(email);
+        currentUser.setAvatar(avatar);
+        userDAO.saveUser(currentUser);
+    }
 }

@@ -59,7 +59,7 @@ public class User {
         this.username = username;
         this.userAuth = new UserAuth(this, password);
         this.email = email;
-        this.balance = 0;
+        this.balance = 5000; // 初始余额50元
         this.avatar = "";
         this.isAdmin = isAdmin;
         this.isBanned = false;

@@ -57,4 +57,14 @@ public interface UserService {
      * @throws Exception
      */
     GetItemsOkDTO<BookSalesDTO> getUserStatistic(Integer currentUserId, Date from, Date to) throws Exception;
+
+    /**
+     * @brief 更新用户信息
+     * @param userId 用户id
+     * @param username 用户名
+     * @param email 邮箱
+     * @param avatar 头像
+     * @throws Exception
+     */
+    void updateUserInfo(Integer userId, String username, String email, String avatar) throws Exception;
 }
