@@ -1,7 +1,5 @@
 package dev.bookstore.creeper.demo.dto;
 
-import java.time.Duration;
-
 import lombok.Data;
 
 @Data

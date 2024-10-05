@@ -4,6 +4,8 @@ import java.time.Duration;
 
 import javax.naming.AuthenticationException;
 
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,18 +19,16 @@ import dev.bookstore.creeper.demo.dto.LogoutOkResponseDTO;
 import dev.bookstore.creeper.demo.dto.RegisterRequestDTO;
 import dev.bookstore.creeper.demo.model.User;
 import dev.bookstore.creeper.demo.service.AuthService;
-import dev.bookstore.creeper.demo.service.UserSession;
 import dev.bookstore.creeper.demo.utils.SessionUtils;
 
 @RestController
 @RequestMapping("/api/auth")
+@Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class AuthController {
     private final AuthService authService;
-    private final UserSession userSession;
 
-    public AuthController(AuthService authService, UserSession userSession) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
-        this.userSession = userSession;
     }
 
     @PostMapping("/register")
@@ -52,7 +52,7 @@ public class AuthController {
         try {
             User loginUser = authService.login(dto);
             SessionUtils.setSession(loginUser);
-            userSession.start();
+            authService.startSession();
             return ResponseEntity
                     .ok(new GeneralResponseDTO(true, "Login successful"));
         } catch(AuthenticationException e) {
@@ -64,7 +64,7 @@ public class AuthController {
 
     @PutMapping("/logout")
     public ResponseEntity<Object> logout() {
-        Duration sessionDuration = userSession.stop();
+        Duration sessionDuration = authService.stopSession();
         SessionUtils.getSession().invalidate();
         return ResponseEntity.ok(new LogoutOkResponseDTO(sessionDuration.toSeconds()));
     }

@@ -5,6 +5,8 @@ import javax.naming.AuthenticationException;
 import dev.bookstore.creeper.demo.dto.RegisterRequestDTO;
 import dev.bookstore.creeper.demo.model.User;
 
+import java.time.Duration;
+
 public interface AuthService {
     /**
      * @brief 注册用户
@@ -19,4 +21,8 @@ public interface AuthService {
      * @throws AuthenticationException 登录失败，抛出异常
      */
     User login(RegisterRequestDTO requestDTO) throws AuthenticationException;
+
+    void startSession();
+
+    Duration stopSession();
 }
