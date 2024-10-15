@@ -1,15 +1,17 @@
 package dev.bookstore.creeper.demo.serviceimpl;
 
-import java.util.Date;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import dev.bookstore.creeper.demo.dao.BookDAO;
 import dev.bookstore.creeper.demo.dao.OrderDAO;
+import dev.bookstore.creeper.demo.dao.OrderItemDAO;
 import dev.bookstore.creeper.demo.dao.UserDAO;
 import dev.bookstore.creeper.demo.dto.CreateCartItemRequestDTO;
 import dev.bookstore.creeper.demo.dto.CreateOrderRequestDTO;
@@ -25,13 +27,16 @@ import dev.bookstore.creeper.demo.service.OrderService;
 @Service
 public class OrderServiceImpl implements OrderService {
     private final OrderDAO orderDAO;
+    private final OrderItemDAO orderItemDAO;
     private final UserDAO userDAO;
     private final BookDAO bookDAO;
 
     public OrderServiceImpl(
+            OrderItemDAO orderItemDAO,
             OrderDAO orderDAO,
             UserDAO userDAO,
             BookDAO bookDAO) {
+        this.orderItemDAO = orderItemDAO;
         this.orderDAO = orderDAO;
         this.userDAO = userDAO;
         this.bookDAO = bookDAO;
@@ -60,6 +65,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public void createOrder(int userId, CreateOrderRequestDTO dto) {
         User user = userDAO.findUserById(userId).orElseThrow(() -> new NoSuchElementException("User not found."));
 
@@ -95,17 +101,21 @@ public class OrderServiceImpl implements OrderService {
             orderItems.add(new OrderItem(books.get(i), dto.getBooks().get(i).getNumber(), order));
         }
 
-        if(user.getBalance() < totalPrice) {
+        if (user.getBalance() < totalPrice) {
             throw new IllegalArgumentException("Balance not enough");
         }
         user.setBalance(user.getBalance() - totalPrice);
-        userDAO.saveUser(user);
 
         bookDAO.saveAllBooks(books);
 
+        orderItemDAO.saveOrderItems(orderItems);
+
+        // int result = 10 / 0;
         orderDAO.saveOrder(order);
+        // int result = 10 / 0;
 
         user.getOrders().add(order);
+        userDAO.saveUser(user);
     }
 
     @Override
