@@ -1,8 +1,8 @@
 package dev.bookstore.creeper.demo.websocket;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -22,7 +22,7 @@ import dev.bookstore.creeper.demo.dto.GeneralResponseDTO;
 
 @EnableWebSocketMessageBroker
 public class OrderWebSocketHandler extends TextWebSocketHandler {
-    private Map<String, WebSocketSession> sessions = new HashMap<>();
+    private Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
 
     private final KafkaTemplate<String, String> kafkaTemplate;
     
