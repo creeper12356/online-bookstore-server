@@ -20,3 +20,7 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    data:
+      redis:
+        host: 127.0.0.1
+        port: 6379
