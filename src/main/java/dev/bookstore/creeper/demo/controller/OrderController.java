@@ -8,7 +8,6 @@ import javax.naming.AuthenticationException;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -24,13 +23,10 @@ import dev.bookstore.creeper.demo.utils.SessionUtils;
 @RequestMapping("/api/orders")
 public class OrderController {
     private final OrderService orderService;
-    private final KafkaTemplate<String, String> kafkaTemplate;
 
     public OrderController(
-            OrderService orderService,
-            KafkaTemplate<String, String> kafkaTemplate) {
+            OrderService orderService) {
         this.orderService = orderService;
-        this.kafkaTemplate = kafkaTemplate;
     }
 
     @InitBinder

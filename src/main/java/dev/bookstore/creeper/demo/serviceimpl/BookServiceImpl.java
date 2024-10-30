@@ -55,11 +55,7 @@ public class BookServiceImpl implements BookService {
             String q,
             Integer page,
             Integer pagesize) {
-        List<Book> bookList = bookDAO.findAllBooks()
-                .stream()
-                .filter(book -> q.isEmpty() ? true : book.getTitle().toLowerCase().contains(q.toLowerCase()))
-                .collect(Collectors.toList());
-
+        List<Book> bookList = bookDAO.findAllBooks(q);
         return new GetAllBooksOkResponseDTO(
                 bookList.size(),
                 PaginationUtils.paginate(bookList, page, pagesize));

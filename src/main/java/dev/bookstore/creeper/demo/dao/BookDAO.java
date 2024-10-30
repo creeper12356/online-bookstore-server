@@ -6,7 +6,7 @@ import java.util.Optional;
 import dev.bookstore.creeper.demo.model.Book;
 
 public interface BookDAO {
-    List<Book> findAllBooks();
+    List<Book> findAllBooks(String q);
     Optional<Book> findBookById(Integer id);
     List<Book> findAllBooksById(List<Integer> ids);
     void saveBook(Book book);
