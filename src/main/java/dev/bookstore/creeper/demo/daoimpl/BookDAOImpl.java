@@ -28,10 +28,10 @@ public class BookDAOImpl implements BookDAO {
     @Override
     public List<Book> findAllBooks() {
         List<Book> books = bookRepository.findAll();
-        System.out.println("Force update redis cache for a list of books are searched.");
-        for(Book book : books) {
-            redisTemplate.opsForValue().set("book" + book.getId(), gson.toJson(book));
-        }
+        // System.out.println("Force update redis cache for a list of books are searched.");
+        // for(Book book : books) {
+        //     redisTemplate.opsForValue().set("book" + book.getId(), gson.toJson(book));
+        // }
         return books;
     }
 
