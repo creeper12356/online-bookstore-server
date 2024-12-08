@@ -1,11 +1,14 @@
 package dev.bookstore.creeper.demo.model;
 
 
+import java.beans.Transient;
+import java.util.ArrayList;
 import java.util.List;
 
 import dev.bookstore.creeper.demo.dto.UpdateBookInfoDTO;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -49,12 +52,17 @@ public class Book {
     @OneToMany(cascade = CascadeType.ALL)    
     private List<Comment> comments;
 
+    @ElementCollection
+    private List<String> tags;
+
+
     public Book() {
         // not used
     }
 
     public Book(UpdateBookInfoDTO dto) {
         this.updateInfo(dto);
+        tags = new ArrayList<>();
     }
 
     public void updateInfo(UpdateBookInfoDTO dto) {

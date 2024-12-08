@@ -2,6 +2,7 @@ package dev.bookstore.creeper.demo.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import javax.naming.AuthenticationException;
@@ -25,8 +26,10 @@ import dev.bookstore.creeper.demo.dto.BookDTO;
 import dev.bookstore.creeper.demo.dto.CreateBookCommentRequestDTO;
 import dev.bookstore.creeper.demo.dto.CreateBookOkResponseDTO;
 import dev.bookstore.creeper.demo.dto.GeneralResponseDTO;
+import dev.bookstore.creeper.demo.dto.GetAllBooksOkResponseDTO;
 import dev.bookstore.creeper.demo.dto.GetBookCommentsOkResponseDTO;
 import dev.bookstore.creeper.demo.dto.UpdateBookInfoDTO;
+import dev.bookstore.creeper.demo.model.Book;
 import dev.bookstore.creeper.demo.service.BookService;
 import dev.bookstore.creeper.demo.utils.SessionUtils;
 
@@ -153,5 +156,16 @@ public class BookController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GeneralResponseDTO(false, e.getMessage()));
         }
     }
+
+    @GetMapping("/{id}/similar")
+    public ResponseEntity<Object> getSimilarBooks(
+        @PathVariable Integer id) {
+            try {
+                List<Book> books = service.getSimilarBooks(id);
+                return ResponseEntity.ok(new GetAllBooksOkResponseDTO(books.size(), books));
+            } catch(Exception e) {
+                return ResponseEntity.badRequest().body(new GeneralResponseDTO(false, e.getMessage()));
+            }
+        }
 
 }

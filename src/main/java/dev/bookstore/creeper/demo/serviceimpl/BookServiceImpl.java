@@ -9,9 +9,11 @@ import java.util.stream.Collectors;
 
 import javax.naming.AuthenticationException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dev.bookstore.creeper.demo.dao.BookDAO;
+import dev.bookstore.creeper.demo.dao.BookTagDAO;
 import dev.bookstore.creeper.demo.dao.CartItemDAO;
 import dev.bookstore.creeper.demo.dao.OrderDAO;
 import dev.bookstore.creeper.demo.dao.OrderItemDAO;
@@ -36,6 +38,9 @@ public class BookServiceImpl implements BookService {
     private final OrderDAO orderDAO;
     private final OrderItemDAO orderItemDAO;
     private final CartItemDAO cartItemDAO;
+
+    @Autowired
+    private BookTagDAO bookTagDAO;
 
     public BookServiceImpl(
             BookDAO bookDAO,
@@ -173,6 +178,25 @@ public class BookServiceImpl implements BookService {
                 .limit(maxCount)
                 .collect(Collectors.toList());
         return new GetItemsOkDTO<>(bookSalesList.size(), bookSalesList);
+    }
+
+    @Override
+    public List<Book> getSimilarBooks(Integer id) {
+        Book book = bookDAO.findBookById(id)
+                .orElseThrow(() -> new NoSuchElementException("Book with id " + id + " not found"));
+        return bookDAO.findSimilarBooksByTags(book);
+    }
+
+    @Override
+    public void updateBookTags(Integer id, List<String> tags) {
+        Book book = bookDAO.findBookById(id)
+                .orElseThrow(() -> new NoSuchElementException("Book with id " + id + " not found"));
+        for(String tag: tags) {
+            // 保证tag存在
+            bookTagDAO.createTag(tag);
+        }
+        book.setTags(tags);
+        bookDAO.saveBook(book);
     }
 
 }

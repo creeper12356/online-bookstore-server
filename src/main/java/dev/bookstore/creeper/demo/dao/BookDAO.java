@@ -12,4 +12,5 @@ public interface BookDAO {
     void saveBook(Book book);
     void saveAllBooks(List<Book> books);
     void deleteBook(Book book);
+    List<Book> findSimilarBooksByTags(Book book);
 }

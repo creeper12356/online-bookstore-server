@@ -12,7 +12,15 @@ services:
     ports:
       - 3306:3306
 
-  redis:
-    image: redis:latest
+  neo4j:
+    image: neo4j:latest
+    volumes:
+        - ./neo4j/logs:/logs
+        - ./neo4j/config:/config
+        - ./neo4j/data:/data
+        - ./neo4j/plugins:/plugins
+    environment:
+        - NEO4J_AUTH=neo4j/12345678
     ports:
-      - "6379:6379"
+      - "7474:7474"
+      - "7687:7687"
