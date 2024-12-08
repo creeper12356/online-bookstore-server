@@ -1,16 +1,16 @@
 package dev.bookstore.creeper.demo.model;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import dev.bookstore.creeper.demo.dto.UpdateBookInfoDTO;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import lombok.Data;
@@ -47,8 +47,12 @@ public class Book {
     @Column(name = "stock")
     private Integer stock;
 
-    @Transient 
+    @Transient
     private List<Comment> comments;
+
+    @ElementCollection
+    private List<String> tags;
+
 
     public Book() {
         // not used
@@ -56,6 +60,7 @@ public class Book {
 
     public Book(UpdateBookInfoDTO dto) {
         this.updateInfo(dto);
+        tags = new ArrayList<>();
     }
 
     public void updateInfo(UpdateBookInfoDTO dto) {

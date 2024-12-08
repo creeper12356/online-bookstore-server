@@ -34,3 +34,4 @@ build/
 
 *data/
 .env
+neo4j/

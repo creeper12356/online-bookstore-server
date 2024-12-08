@@ -1,6 +1,6 @@
 spring:
   application:
-    name: Online Bookstore Backend
+    name: MainService
   datasource:
     url: jdbc:mysql://localhost:3306/bookstore
     username: bookstore
@@ -21,8 +21,11 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
   data:
-    redis:
-      host: 127.0.0.1
-      port: 6379
     mongodb:
       uri: mongodb://bookstore:123456@localhost:27017/bookstore
+      
+  neo4j:
+    uri: bolt://localhost:7687
+    authentication:
+      username: neo4j
+      password: 12345678
