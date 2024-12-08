@@ -79,7 +79,7 @@ public class BookServiceImpl implements BookService {
     public void createBookComment(Integer id, String content) {
         Book book = bookDAO.findBookById(id)
                 .orElseThrow(() -> new NoSuchElementException("Book with id " + id + " not found"));
-        book.getComments().add(new Comment("username", content));
+        book.getComments().add(new Comment(id, "username", content));
         bookDAO.saveBook(book);
     }
 

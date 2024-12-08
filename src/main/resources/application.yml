@@ -20,7 +20,9 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
-    data:
-      redis:
-        host: 127.0.0.1
-        port: 6379
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+    mongodb:
+      uri: mongodb://bookstore:123456@localhost:27017/bookstore

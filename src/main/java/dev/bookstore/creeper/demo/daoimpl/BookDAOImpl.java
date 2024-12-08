@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -17,12 +18,16 @@ import com.google.gson.Gson;
 
 import dev.bookstore.creeper.demo.dao.BookDAO;
 import dev.bookstore.creeper.demo.model.Book;
+import dev.bookstore.creeper.demo.repository.BookCommentRepository;
 import dev.bookstore.creeper.demo.repository.BookRepository;
 import jakarta.annotation.PostConstruct;
 
 @Component
 public class BookDAOImpl implements BookDAO {
     private final BookRepository bookRepository;
+    @Autowired
+    private BookCommentRepository bookCommentRepository;
+
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
@@ -76,7 +81,9 @@ public class BookDAOImpl implements BookDAO {
         String redisFindRes = (String) redisTemplate.opsForValue().get("book" + id);
         if (redisFindRes != null) {
             System.out.println("Find book with id " + id + " in redis cache.");
-            return Optional.of(gson.fromJson(redisFindRes, Book.class));
+            Book book = gson.fromJson(redisFindRes, Book.class);
+            book.setComments(bookCommentRepository.findByBookId(id));
+            return Optional.of(book);
         } else {
             // TODO: code not reached
             System.out.println("Cannot find book with id " + id + " in redis cache, update cache.");
@@ -93,6 +100,7 @@ public class BookDAOImpl implements BookDAO {
         System.out.println("Force update redis cache for book with id " + book.getId() + " is updated.");
         redisTemplate.opsForValue().set("book" + book.getId(), gson.toJson(book));
         bookRepository.save(book);
+        bookCommentRepository.saveAll(book.getComments());
     }
 
     @Override
