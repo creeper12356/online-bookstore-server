@@ -208,4 +208,10 @@ public class BookServiceImpl implements BookService {
         return book.getTags();
     }
 
+    @Override
+    public List<Book> getAllBooks(String q) {
+        List<Book> bookList = bookDAO.findAllBooks(q);
+        return bookList;
+    }
+
 }

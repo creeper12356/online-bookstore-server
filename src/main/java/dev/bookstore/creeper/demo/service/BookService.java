@@ -12,6 +12,7 @@ import dev.bookstore.creeper.demo.model.Comment;
 
 public interface BookService {
     GetAllBooksOkResponseDTO getAllBooks(String q, Integer page, Integer pagesize);
+    List<Book> getAllBooks(String q);
     Book getBookInfo(Integer id);
     List<Comment> getBookComments(Integer id);
     Integer createBook(Integer userId, UpdateBookInfoDTO book) throws Exception;
