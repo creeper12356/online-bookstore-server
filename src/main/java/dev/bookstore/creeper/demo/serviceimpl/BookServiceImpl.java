@@ -81,10 +81,12 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void createBookComment(Integer id, String content) {
+    public void createBookComment(Integer userId, Integer id, String content) {
         Book book = bookDAO.findBookById(id)
                 .orElseThrow(() -> new NoSuchElementException("Book with id " + id + " not found"));
-        book.getComments().add(new Comment(id, "username", content));
+        User user = userDAO.findUserById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User with id " + userId + " not found"));
+        book.getComments().add(new Comment(id, user.getUsername(), content));
         bookDAO.saveBook(book);
     }
 
@@ -197,6 +199,13 @@ public class BookServiceImpl implements BookService {
         }
         book.setTags(tags);
         bookDAO.saveBook(book);
+    }
+
+    @Override
+    public List<String> getBookTags(Integer id) {
+        Book book = bookDAO.findBookById(id)
+                .orElseThrow(() -> new NoSuchElementException("Book with id " + id + " not found"));
+        return book.getTags();
     }
 
 }

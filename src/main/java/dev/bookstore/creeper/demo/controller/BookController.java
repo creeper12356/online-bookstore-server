@@ -137,13 +137,16 @@ public class BookController {
     }
 
     @PostMapping("/{id}/comments")
-    public ResponseEntity<Object> createBotComment(
+    public ResponseEntity<Object> createBookComment(
             @PathVariable Integer id,
             @RequestBody CreateBookCommentRequestDTO dto) {
         try {
-            service.createBookComment(id, dto.getContent());
+            service.createBookComment(SessionUtils.getSessionUserId(), id, dto.getContent());
             return ResponseEntity.ok(new GeneralResponseDTO(true, "Comment created successfully"));
-        } catch (NoSuchElementException e) {
+        } catch(AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new GeneralResponseDTO(false, e.getMessage()));
+        }
+        catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new GeneralResponseDTO(false, e.getMessage()));
         }
     }
@@ -174,6 +177,17 @@ public class BookController {
             }
         }
     
+    @GetMapping("/{id}/tags")
+    public ResponseEntity<Object> getBookTags(
+        @PathVariable Integer id
+    ) {
+        try {
+            return ResponseEntity.ok(service.getBookTags(id));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new GeneralResponseDTO(false, e.getMessage()));
+        }
+    }
+
     @PutMapping("/{id}/tags")
     public ResponseEntity<Object> updateBookTags(
         @PathVariable Integer id, 
