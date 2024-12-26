@@ -1,5 +1,6 @@
 package dev.bookstore.creeper.demo.serviceimpl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import javax.naming.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import dev.bookstore.creeper.demo.dao.BookCommentDAO;
 import dev.bookstore.creeper.demo.dao.BookDAO;
 import dev.bookstore.creeper.demo.dao.BookTagDAO;
 import dev.bookstore.creeper.demo.dao.CartItemDAO;
@@ -38,6 +40,9 @@ public class BookServiceImpl implements BookService {
     private final OrderDAO orderDAO;
     private final OrderItemDAO orderItemDAO;
     private final CartItemDAO cartItemDAO;
+
+    @Autowired
+    private BookCommentDAO bookCommentDAO;
 
     @Autowired
     private BookTagDAO bookTagDAO;
@@ -86,8 +91,29 @@ public class BookServiceImpl implements BookService {
                 .orElseThrow(() -> new NoSuchElementException("Book with id " + id + " not found"));
         User user = userDAO.findUserById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User with id " + userId + " not found"));
-        book.getComments().add(new Comment(id, user.getUsername(), content));
+        book.getComments().add(new Comment(id, user.getUsername(), content, null));
         bookDAO.saveBook(book);
+    }
+
+    @Override
+    public void createBookCommentReply(Integer userId, String content, String replyToCommentId) {
+        User user = userDAO.findUserById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User with id " + userId + " not found"));
+        Comment replyTo = bookCommentDAO.findCommentById(replyToCommentId)
+                .orElseThrow(() -> new NoSuchElementException("Comment with id " + replyToCommentId + " not found"));
+        Book book = bookDAO.findBookById(replyTo.getBookId())
+                .orElseThrow(() -> new NoSuchElementException("Book with id " + replyTo.getBookId() + " not found"));
+        
+        Comment newComment = new Comment(replyTo.getBookId(), user.getUsername(), content, replyToCommentId);
+        
+        // 将新评论添加到书籍中
+        book.getComments().add(newComment);
+        bookDAO.saveBook(book); 
+
+        // 将新评论添加到回复的评论中
+        List<Comment> comments = new ArrayList<>(replyTo.getReplies());
+        comments.add(newComment);
+        bookCommentDAO.updateComments(replyToCommentId, comments);
     }
 
     @Override

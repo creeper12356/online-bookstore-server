@@ -19,6 +19,7 @@ public interface BookService {
     void updateBookInfo(Integer userId, Integer bookId, UpdateBookInfoDTO book) throws Exception;
     void deleteBook(Integer userId, Integer bookId) throws Exception;
     void createBookComment(Integer userId, Integer id, String content);
+    void createBookCommentReply(Integer userId, String content, String replyToCommentId);
 
 
     GetItemsOkDTO<BookSalesDTO> getBookRank(Integer currentUserId, Date from, Date to, Integer maxCount)  throws Exception;

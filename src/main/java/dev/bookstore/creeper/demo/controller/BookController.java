@@ -151,6 +151,23 @@ public class BookController {
         }
     }
 
+    @PostMapping("/{bookId}/comments/{commentId}/replies")
+    public ResponseEntity<Object> createBookCommentReply(
+        @PathVariable Integer bookId, 
+        @PathVariable String commentId,
+        @RequestBody CreateBookCommentRequestDTO dto) {
+            // NOTE: bookId unused
+            try {
+                service.createBookCommentReply(SessionUtils.getSessionUserId(), dto.getContent(), commentId);
+                return ResponseEntity.ok(new GeneralResponseDTO(true, "Comment reply created successfully"));
+            } catch(AuthenticationException e) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new GeneralResponseDTO(false, e.getMessage()));
+            }
+            catch (NoSuchElementException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new GeneralResponseDTO(false, e.getMessage()));
+            }
+        }
+
     @GetMapping("/rank")
     public ResponseEntity<Object> getBookRank(
             @RequestParam(required = false) Date from,
