@@ -203,6 +203,15 @@ public class BookController {
             return ResponseEntity.badRequest().body(new GeneralResponseDTO(false, e.getMessage()));
         }
     }
+
+    @GetMapping("/tags")
+    public ResponseEntity<Object> getAllTags() {
+        try {
+            return ResponseEntity.ok(bookTagService.getAllTags());
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new GeneralResponseDTO(false, e.getMessage()));
+        }
+    }
     
     @GetMapping("/{id}/tags")
     public ResponseEntity<Object> getBookTags(

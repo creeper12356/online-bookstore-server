@@ -1,5 +1,8 @@
 package dev.bookstore.creeper.demo.service;
 
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,5 +43,9 @@ public class BookTagService {
 
     public void removeAllTags() {
         bookTagDAO.removeAllTags();
+    }
+
+    public Set<String> getAllTags() {
+        return bookTagDAO.getAllTags();
     }
 }

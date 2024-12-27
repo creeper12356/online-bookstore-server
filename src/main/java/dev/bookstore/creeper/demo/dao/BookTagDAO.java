@@ -98,4 +98,8 @@ public class BookTagDAO {
         bookTagRepository.deleteAll();
         return true;
     }
+
+    public Set<String> getAllTags() {
+        return bookTagRepository.findAll().stream().map(BookTag::getName).collect(Collectors.toSet());
+    }
 }
