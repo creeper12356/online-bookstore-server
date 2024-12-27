@@ -8,10 +8,7 @@ import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import lombok.Data;
-
 @Node
-@Data
 public class BookTag {
     @Id
     @GeneratedValue
@@ -19,24 +16,25 @@ public class BookTag {
 
     private String name;
 
+    // 维护双向关系，参考： https://graphaware.com/blog/neo4j-bidirectional-relationships/
     @Relationship(type = "RELATED")
-    // TODO: 双向关系
-    public Set<BookTag> related;
+    public Set<BookTag> related = new HashSet<>();
 
-    public void relateTo(BookTag tag) {
-        if (related == null) {
-            related = new HashSet<>();
-        }
-
-        related.add(tag);
+    public String getName() {
+        return name;
     }
 
-    public void unrelatedTo(BookTag tag) {
-        if (related == null) {
-            return;
-        }
+    public Set<BookTag> getRelated() {
+        return related;
+    }
 
-        related.remove(tag);
+    public void relateTo(BookTag bookTag) {
+        related.add(bookTag);
+    }
+
+    public void unrelateTo(BookTag bookTag) {
+        related.remove(bookTag);
+        bookTag.related.remove(this);
     }
 
     private BookTag() {

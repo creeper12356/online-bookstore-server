@@ -38,6 +38,7 @@ public class BookTagDAO {
             return false;
         }
 
+        // 更新bookTag1的related属性并持久化
         bookTag1.relateTo(bookTag2);
         bookTagRepository.save(bookTag1);
 
@@ -57,8 +58,9 @@ public class BookTagDAO {
             return false;
         }
 
-        bookTag1.unrelatedTo(bookTag2);
-        bookTagRepository.save(bookTag1);
+        // 更新bookTag1和bookTag2的related属性并持久化
+        bookTag1.unrelateTo(bookTag2);
+        bookTagRepository.saveAll(Set.of(bookTag1, bookTag2));
 
         return true;
     }
@@ -74,5 +76,26 @@ public class BookTagDAO {
         tags.add(tag);
         
         return tags.stream().map(BookTag::getName).collect(Collectors.toSet());
+    }
+
+    public boolean removeTag(String name) {
+        BookTag bookTag = bookTagRepository.findByName(name);
+        if(bookTag == null) {
+            return false;
+        }
+
+        Set<BookTag> relatedTags = new HashSet<> (bookTag.getRelated());
+        for(BookTag relatedTag : relatedTags) {
+            relatedTag.unrelateTo(bookTag);
+        }
+        bookTagRepository.saveAll(relatedTags);
+        bookTagRepository.removeByName(name);
+
+        return true;
+    }
+
+    public boolean removeAllTags() {
+        bookTagRepository.deleteAll();
+        return true;
     }
 }

@@ -194,6 +194,16 @@ public class BookController {
             }
         }
     
+    @GetMapping("/filter/tags/{tagName}")
+    public ResponseEntity<Object> getSimilarBooksByTags(@PathVariable String tagName) {
+        try {
+            List<Book> books = service.getSimilarBooksByTag(tagName);
+            return ResponseEntity.ok(new GetAllBooksOkResponseDTO(books.size(), books));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new GeneralResponseDTO(false, e.getMessage()));
+        }
+    }
+    
     @GetMapping("/{id}/tags")
     public ResponseEntity<Object> getBookTags(
         @PathVariable Integer id
@@ -242,6 +252,26 @@ public class BookController {
         try {
             bookTagService.createTag(tag);
             return ResponseEntity.ok(new GeneralResponseDTO(true, "Tag " + tag + " created successfully"));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new GeneralResponseDTO(false, e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/tags")
+    public ResponseEntity<Object> removeTag(@RequestBody String tag) {
+        try {
+            bookTagService.removeTag(tag);
+            return ResponseEntity.ok(new GeneralResponseDTO(true, "Tag " + tag + " removed successfully"));
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(new GeneralResponseDTO(false, e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/tags/all")
+    public ResponseEntity<Object> removeAllTags() {
+        try {
+            bookTagService.removeAllTags();
+            return ResponseEntity.ok(new GeneralResponseDTO(true, "All tags removed successfully"));
         } catch(Exception e) {
             return ResponseEntity.badRequest().body(new GeneralResponseDTO(false, e.getMessage()));
         }

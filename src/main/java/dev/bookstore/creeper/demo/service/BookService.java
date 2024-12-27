@@ -25,6 +25,7 @@ public interface BookService {
     GetItemsOkDTO<BookSalesDTO> getBookRank(Integer currentUserId, Date from, Date to, Integer maxCount)  throws Exception;
 
     List<Book> getSimilarBooks(Integer id);
+    List<Book> getSimilarBooksByTag(String tag);
     List<String> getBookTags(Integer id);
     void updateBookTags(Integer id, List<String> tags);
 }

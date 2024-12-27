@@ -30,4 +30,15 @@ public class BookTagService {
             throw new IllegalArgumentException("Tag already exists");
         }
     }
+
+    public void removeTag(String tag) {
+        boolean res = bookTagDAO.removeTag(tag);
+        if(!res) {
+            throw new IllegalArgumentException("Tag does not exist");
+        }
+    }
+
+    public void removeAllTags() {
+        bookTagDAO.removeAllTags();
+    }
 }

@@ -205,15 +205,20 @@ public class BookServiceImpl implements BookService {
                 .map(entry -> new BookSalesDTO(entry.getKey(), entry.getValue()))
                 .limit(maxCount)
                 .collect(Collectors.toList());
-        return new GetItemsOkDTO<>(bookSalesList.size(), bookSalesList);
-    }
-
-    @Override
-    public List<Book> getSimilarBooks(Integer id) {
-        Book book = bookDAO.findBookById(id)
+                return new GetItemsOkDTO<>(bookSalesList.size(), bookSalesList);
+            }
+            
+            @Override
+            public List<Book> getSimilarBooks(Integer id) {
+                Book book = bookDAO.findBookById(id)
                 .orElseThrow(() -> new NoSuchElementException("Book with id " + id + " not found"));
-        return bookDAO.findSimilarBooksByTags(book);
-    }
+                return bookDAO.findSimilarBooksByTags(book);
+            }
+            
+            @Override
+            public List<Book> getSimilarBooksByTag(String tag) {
+                return bookDAO.findSimilarBooksByTag(tag);
+            }
 
     @Override
     public void updateBookTags(Integer id, List<String> tags) {
@@ -226,7 +231,7 @@ public class BookServiceImpl implements BookService {
         book.setTags(tags);
         bookDAO.saveBook(book);
     }
-
+    
     @Override
     public List<String> getBookTags(Integer id) {
         Book book = bookDAO.findBookById(id)
@@ -239,5 +244,6 @@ public class BookServiceImpl implements BookService {
         List<Book> bookList = bookDAO.findAllBooks(q);
         return bookList;
     }
+
 
 }

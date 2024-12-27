@@ -80,4 +80,11 @@ public class BookDAOImpl implements BookDAO {
         return bookRepository.findBookContainsTag(similarTagNameSet);
     }
 
+    @Override
+    public List<Book> findSimilarBooksByTag(String tag) {
+        Set<String> similarTags = bookTagDAO.getSimilarTags(tag);
+
+        return bookRepository.findBookContainsTag(similarTags);
+    }
+
 }
