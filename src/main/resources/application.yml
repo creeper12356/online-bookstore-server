@@ -2,7 +2,7 @@ spring:
   application:
     name: MainService
   datasource:
-    url: jdbc:mysql://localhost:3306/bookstore
+    url: jdbc:mysql://db:3306/bookstore
     username: bookstore
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -10,22 +10,12 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-  kafka:
-    bootstrap-servers: localhost:9092
-    consumer:
-      group-id: my-group
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
   data:
     mongodb:
-      uri: mongodb://bookstore:123456@localhost:27017/bookstore
+      uri: mongodb://bookstore:123456@mongo:27017/bookstore
       
   neo4j:
-    uri: bolt://localhost:7687
+    uri: bolt://neo4j:7687
     authentication:
       username: neo4j
       password: 12345678

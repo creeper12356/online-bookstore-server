@@ -11,7 +11,7 @@ make prepare
 
 ### Run 
 ```bash
-./mvnw spring-boot:run 
+docker compose up app --build
 ```
 
 ### Cleanup

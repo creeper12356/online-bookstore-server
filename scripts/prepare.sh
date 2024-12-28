@@ -4,4 +4,4 @@ cd $KAFKA_DIR
 ./bin/kafka-server-start.sh -daemon ./config/server.properties
 cd -
 
-docker compose up -d
+docker compose up db neo4j mongo -d
