@@ -9,7 +9,7 @@ type Book {
     description: String
     isbn: String
     price: Int
-    cover: Int
+    cover: String
     sales: Int
     stock: Int
 }
