@@ -4,6 +4,8 @@ services:
     build:
       dockerfile: Dockerfile
     image: bookstore_app:latest
+    volumes:
+      - .:/app/online-bookstore-server # 将开发目录挂载到容器，便于开发
     ports:
       - "8080:8080"
   db:
