@@ -17,6 +17,7 @@ services:
       MYSQL_PASSWORD: 123456
     volumes:
       - ./data:/var/lib/mysql
+      - ./init-sql/bookstore.sql:/docker-entrypoint-initdb.d/bookstore.sql # 加载示例数据到MySQL数据库
     ports:
       - 3306:3306
 
