@@ -11,6 +11,9 @@ import java.util.stream.Collectors;
 import javax.naming.AuthenticationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.stereotype.Service;
 
 import dev.bookstore.creeper.demo.dao.BookCommentDAO;
@@ -71,11 +74,25 @@ public class BookServiceImpl implements BookService {
                 PaginationUtils.paginate(bookList, page, pagesize));
     }
 
-    @Override
-    public Book getBookInfo(Integer id) {
+    private Book _getBookInfo(Integer id) {
         Book book = bookDAO.findBookById(id)
                 .orElseThrow(() -> new NoSuchElementException("Book with id " + id + " not found"));
         return book;
+    }
+
+    @Cacheable(value = "bookInfo", key = "{#id}")
+    private Book _getBookInfoCached(Integer id) {
+        return _getBookInfo(id);
+    }
+
+    @Override
+    public Book getBookInfo(Integer id) {
+        try {
+            return _getBookInfoCached(id);
+        } catch (RedisConnectionFailureException e) {
+            System.out.println("Redis connection failure, read from db");
+            return _getBookInfo(id);
+        }
     }
 
     @Override
@@ -103,12 +120,12 @@ public class BookServiceImpl implements BookService {
                 .orElseThrow(() -> new NoSuchElementException("Comment with id " + replyToCommentId + " not found"));
         Book book = bookDAO.findBookById(replyTo.getBookId())
                 .orElseThrow(() -> new NoSuchElementException("Book with id " + replyTo.getBookId() + " not found"));
-        
+
         Comment newComment = new Comment(replyTo.getBookId(), user.getUsername(), content, replyToCommentId);
-        
+
         // 将新评论添加到书籍中
         book.getComments().add(newComment);
-        bookDAO.saveBook(book); 
+        bookDAO.saveBook(book);
 
         // 将新评论添加到回复的评论中
         List<Comment> comments = new ArrayList<>(replyTo.getReplies());
@@ -129,8 +146,7 @@ public class BookServiceImpl implements BookService {
         return newBook.getId();
     }
 
-    @Override
-    public void updateBookInfo(
+    private void _updateBookInfo(
             Integer userId,
             Integer bookId,
             UpdateBookInfoDTO dto) throws Exception {
@@ -145,8 +161,27 @@ public class BookServiceImpl implements BookService {
         bookDAO.saveBook(book);
     }
 
+    @CacheEvict(value = "bookInfo", key = "{#userId}")
+    private void _updateBookInfoCached(
+            Integer userId,
+            Integer bookId,
+            UpdateBookInfoDTO dto) throws Exception {
+        _updateBookInfo(userId, bookId, dto);
+    }
+
     @Override
-    public void deleteBook(Integer userId, Integer bookId) throws Exception {
+    public void updateBookInfo(
+            Integer userId,
+            Integer bookId,
+            UpdateBookInfoDTO dto) throws Exception {
+        try {
+            _updateBookInfoCached(userId, bookId, dto);
+        } catch (RedisConnectionFailureException e) {
+            _updateBookInfo(userId, bookId, dto);
+        }
+    }
+
+    private void _deleteBook(Integer userId, Integer bookId) throws Exception {
         User user = userDAO.findUserById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User with id " + userId + " not found"));
         if (!user.getIsAdmin()) {
@@ -168,14 +203,30 @@ public class BookServiceImpl implements BookService {
         bookDAO.deleteBook(book);
     }
 
+    @CacheEvict(value = "bookInfo", key = "{#bookId}")
+    private void _deleteBookCached(Integer userId, Integer bookId) throws Exception {
+        _deleteBook(userId, bookId);
+    }
+
+
     @Override
-    public GetItemsOkDTO<BookSalesDTO> getBookRank(Integer currentUserId, Date from, Date to, Integer maxCount) throws Exception {
+    public void deleteBook(Integer userId, Integer bookId) throws Exception {
+        try {
+            _deleteBookCached(userId, bookId);
+        } catch(RedisConnectionFailureException e) {
+            _deleteBook(userId, bookId);
+        }
+    }
+
+    @Override
+    public GetItemsOkDTO<BookSalesDTO> getBookRank(Integer currentUserId, Date from, Date to, Integer maxCount)
+            throws Exception {
         User currentUser = userDAO.findUserById(currentUserId)
                 .orElseThrow(() -> new NoSuchElementException("User not found."));
         if (!currentUser.getIsAdmin()) {
             throw new AuthenticationException("Permission denied.");
         }
-        
+
         List<Order> orders = orderDAO.findAllOrders()
                 .stream()
                 .filter(order -> from == null || order.getTime().after(from))
@@ -205,33 +256,33 @@ public class BookServiceImpl implements BookService {
                 .map(entry -> new BookSalesDTO(entry.getKey(), entry.getValue()))
                 .limit(maxCount)
                 .collect(Collectors.toList());
-                return new GetItemsOkDTO<>(bookSalesList.size(), bookSalesList);
-            }
-            
-            @Override
-            public List<Book> getSimilarBooks(Integer id) {
-                Book book = bookDAO.findBookById(id)
+        return new GetItemsOkDTO<>(bookSalesList.size(), bookSalesList);
+    }
+
+    @Override
+    public List<Book> getSimilarBooks(Integer id) {
+        Book book = bookDAO.findBookById(id)
                 .orElseThrow(() -> new NoSuchElementException("Book with id " + id + " not found"));
-                return bookDAO.findSimilarBooksByTags(book);
-            }
-            
-            @Override
-            public List<Book> getSimilarBooksByTag(String tag) {
-                return bookDAO.findSimilarBooksByTag(tag);
-            }
+        return bookDAO.findSimilarBooksByTags(book);
+    }
+
+    @Override
+    public List<Book> getSimilarBooksByTag(String tag) {
+        return bookDAO.findSimilarBooksByTag(tag);
+    }
 
     @Override
     public void updateBookTags(Integer id, List<String> tags) {
         Book book = bookDAO.findBookById(id)
                 .orElseThrow(() -> new NoSuchElementException("Book with id " + id + " not found"));
-        for(String tag: tags) {
+        for (String tag : tags) {
             // 保证tag存在
             bookTagDAO.createTag(tag);
         }
         book.setTags(tags);
         bookDAO.saveBook(book);
     }
-    
+
     @Override
     public List<String> getBookTags(Integer id) {
         Book book = bookDAO.findBookById(id)
@@ -244,6 +295,5 @@ public class BookServiceImpl implements BookService {
         List<Book> bookList = bookDAO.findAllBooks(q);
         return bookList;
     }
-
 
 }

@@ -13,6 +13,9 @@ spring:
   data:
     mongodb:
       uri: mongodb://bookstore:123456@mongo:27017/bookstore
+    redis:
+      host: redis
+      port: 6379
       
   neo4j:
     uri: bolt://neo4j:7687

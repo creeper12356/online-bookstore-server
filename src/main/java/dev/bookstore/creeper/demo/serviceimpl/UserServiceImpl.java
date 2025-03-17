@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 
 import javax.naming.AuthenticationException;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.stereotype.Service;
 
 import dev.bookstore.creeper.demo.dao.OrderDAO;
@@ -32,9 +35,22 @@ public class UserServiceImpl implements UserService {
         this.orderDAO = orderDAO;
     }
 
+    private User _getUserProfile(int userId) {
+        return userDAO.findUserById(userId).orElseThrow(() -> new NoSuchElementException("User not found."));
+    }
+
+    @Cacheable(value = "userInfo", key = "{#userId}")
+    private User _getUserProfileCached(int userId) {
+        return _getUserProfile(userId);
+    }
+
     @Override
     public User getUserProfile(int userId) {
-        return userDAO.findUserById(userId).orElseThrow(() -> new NoSuchElementException("User not found."));
+        try {
+            return _getUserProfileCached(userId);
+        } catch(RedisConnectionFailureException e) {
+            return _getUserProfile(userId);
+        }
     }
 
     @Override
@@ -164,13 +180,28 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    @Override
-    public void updateUserInfo(Integer userId, String username, String email, String avatar) throws Exception {
+
+    private void _updateUserInfo(Integer userId, String username, String email, String avatar) throws Exception {
         User currentUser = userDAO.findUserById(userId).orElseThrow(() -> new NoSuchElementException("User not found."));
 
         currentUser.setUsername(username);
         currentUser.setEmail(email);
         currentUser.setAvatar(avatar);
         userDAO.saveUser(currentUser);
+    }
+
+    // FIXME: redis cache should be used at DAO level, instead of Service level, However, this does not have functional problems
+    @CacheEvict(value = "userInfo", key = "{#userId}")
+    private void _updateUserInfoCached(Integer userId, String username, String email, String avatar) throws Exception {
+        _updateUserInfo(userId, username, email, avatar);
+    }
+
+    @Override
+    public void updateUserInfo(Integer userId, String username, String email, String avatar) throws Exception {
+        try {
+            _updateUserInfoCached(userId, username, email, avatar);
+        } catch(RedisConnectionFailureException e) {
+            _updateUserInfo(userId, username, email, avatar);
+        }
     }
 }

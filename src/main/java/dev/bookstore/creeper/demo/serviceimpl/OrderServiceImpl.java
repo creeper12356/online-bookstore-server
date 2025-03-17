@@ -6,10 +6,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import dev.bookstore.creeper.demo.dao.BookDAO;
 import dev.bookstore.creeper.demo.dao.OrderDAO;
@@ -25,7 +23,6 @@ import dev.bookstore.creeper.demo.model.Order;
 import dev.bookstore.creeper.demo.model.OrderItem;
 import dev.bookstore.creeper.demo.model.User;
 import dev.bookstore.creeper.demo.service.OrderService;
-import lombok.Data;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -34,8 +31,8 @@ public class OrderServiceImpl implements OrderService {
     private final UserDAO userDAO;
     private final BookDAO bookDAO;
 
-    @Autowired
-    private RestTemplate restTemplate;
+    // @Autowired
+    // private RestTemplate restTemplate;
 
     public OrderServiceImpl(
             OrderItemDAO orderItemDAO,
@@ -70,16 +67,16 @@ public class OrderServiceImpl implements OrderService {
         return new GetItemsOkDTO<>(orders.size(), orders);
     }
 
-    @Data
-    private class PriceQuantityRequest {
-        Integer price;
-        Integer quantity;
+    // @Data
+    // private class PriceQuantityRequest {
+    //     Integer price;
+    //     Integer quantity;
 
-        public PriceQuantityRequest(Integer price, Integer quantity) {
-            this.price = price;
-            this.quantity = quantity;
-        }
-    }
+    //     public PriceQuantityRequest(Integer price, Integer quantity) {
+    //         this.price = price;
+    //         this.quantity = quantity;
+    //     }
+    // }
 
     @Override
     @Transactional
