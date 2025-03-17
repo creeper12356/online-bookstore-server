@@ -30,3 +30,11 @@ After all this, you can run the [Frontend](https://github.com/creeper12356/onlin
 ```sh
 docker compose down
 ```
+
+## Some snapshots
+![alt text](snapshots/Screenshot_20250317_144749.png)
+![alt text](snapshots/Screenshot_20250317_144811.png)
+![alt text](snapshots/Screenshot_20250317_144839.png)
+![alt text](snapshots/Screenshot_20250317_144845.png)
+![alt text](snapshots/Screenshot_20250317_144910.png)
+![alt text](snapshots/Screenshot_20250317_145014.png)
