@@ -44,3 +44,18 @@ services:
     volumes:
       - ./mongodb_data:/data/db
       - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js
+
+  kafka:
+    image: bitnami/kafka:latest
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
+      ALLOW_PLAINTEXT_LISTENER: "yes"
+      
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    ports:
+      - "2181:2181"
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: "yes"

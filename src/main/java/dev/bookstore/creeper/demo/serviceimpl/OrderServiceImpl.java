@@ -114,10 +114,11 @@ public class OrderServiceImpl implements OrderService {
             }
             books.get(i).setStock(books.get(i).getStock() - dto.getBooks().get(i).getNumber());
             books.get(i).setSales(books.get(i).getSales() + dto.getBooks().get(i).getNumber());
-            // totalPrice += books.get(i).getPrice() * dto.getBooks().get(i).getNumber();
-            // 向微服务CalPriceService发送请求
-            totalPrice += restTemplate.postForObject("http://CalPriceService/calprice", new PriceQuantityRequest(
-                    books.get(i).getPrice(), dto.getBooks().get(i).getNumber()), Integer.class);
+            totalPrice += books.get(i).getPrice() * dto.getBooks().get(i).getNumber();
+            // FIXME: 不使用微服务进行计算
+            // // 向微服务CalPriceService发送请求
+            // totalPrice += restTemplate.postForObject("http://CalPriceService/calprice", new PriceQuantityRequest(
+            //         books.get(i).getPrice(), dto.getBooks().get(i).getNumber()), Integer.class);
             orderItems.add(new OrderItem(books.get(i), dto.getBooks().get(i).getNumber(), order));
         }
 

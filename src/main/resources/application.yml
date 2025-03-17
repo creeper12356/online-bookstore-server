@@ -19,3 +19,9 @@ spring:
     authentication:
       username: neo4j
       password: 12345678
+
+  kafka:
+    bootstrap-servers: "kafka:9092"
+    consumer:
+      group-id: "myGroup"
+
